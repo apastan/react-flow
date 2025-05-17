@@ -21,8 +21,9 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
     const [showResponse, setShowResponse] = useState<boolean>(!!responseTextDefault);
 
     const questionRef = useRef<HTMLTextAreaElement>(null)
-    const onlyChoicesRef = useRef<HTMLButtonElement>(null)
+    const questionResponseInitialRef = useRef(responseTextDefault)
     const questionResponseRef = useRef<HTMLTextAreaElement>(null)
+    const onlyChoicesRef = useRef<HTMLButtonElement>(null)
 
     const handleChangeStartNode = () => {
         if (!isStartNode) {
@@ -35,9 +36,10 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
     const handleToggleResponse = () => {
         setShowResponse((state) => {
             if (state) {
-
-                // добавить логику по очистке responseTextRef
-                // добавить логику по удалению responseText из ноды
+                if (questionResponseRef.current) {
+                    questionResponseRef.current.value = ""
+                }
+                questionResponseInitialRef.current = ""
             }
             return !state
         })
@@ -91,7 +93,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
             </div>
             <div className="mb-2">
                 {showResponse && <Textarea
-                    defaultValue={responseTextDefault}
+                    defaultValue={questionResponseInitialRef.current}
                     placeholder="Response (необязательно)"
                     className="text-sm"
                     ref={questionResponseRef}

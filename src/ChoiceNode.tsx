@@ -21,6 +21,7 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
     const [showResponse, setShowResponse] = useState<boolean>(!!responseTextDefault);
 
     const choiceTextRef = useRef<HTMLTextAreaElement>(null)
+    const responseTextInitial = useRef(responseTextDefault)
     const responseTextRef = useRef<HTMLTextAreaElement>(null)
     const requestContactRef = useRef<HTMLButtonElement>(null)
 
@@ -28,10 +29,11 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
 
     const handleToggleResponse = () => {
         setShowResponse((state) => {
-            if (state) {
-
-                // добавить логику по очистке responseTextRef
-                // добавить логику по удалению responseText из ноды
+            if (state ) {
+                if (responseTextRef.current) {
+                    responseTextRef.current.value = ""
+                }
+                responseTextInitial.current = ""
             }
             return !state
         })
@@ -78,7 +80,7 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
             </div>
             <div className="mb-2">
                 {showResponse && <Textarea
-                    defaultValue={responseTextDefault}
+                    defaultValue={responseTextInitial.current}
                     placeholder="Response (необязательно)"
                     className="text-sm"
                     ref={responseTextRef}

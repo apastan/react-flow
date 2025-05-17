@@ -135,7 +135,7 @@ export function DiagramBuilder() {
                     isStartNode: !f,
                     updateStartNodeId,
                     questionDefault: "",
-                    responseTextDefault: "",
+                    responseTextDefault: "fffffffffffff",
                     onlyChoicesDefault: true,
                     removeNode: removeNode
                 },
@@ -158,7 +158,7 @@ export function DiagramBuilder() {
             position: { x: 100, y: 100 },
             data: {
                 choiceTextDefault: "",
-                responseTextDefault: "",
+                responseTextDefault: "ggggggggggg",
                 requestContactDefault: false,
                 removeNode: removeNode,
             },
