@@ -8,8 +8,7 @@ import {
     type Connection,
     Controls,
     type Edge,
-    type EdgeChange,
-    MarkerType,
+    type EdgeChange, MarkerType,
     MiniMap,
     type Node,
     type NodeChange,
@@ -67,31 +66,45 @@ export function DiagramBuilder() {
         []
     );
 
-    const onConnect = useCallback(
-        (connection: Connection) => {
-            const sourceNode = nodes.find((node) => node.id === connection.source);
-            const targetNode = nodes.find((node) => node.id === connection.target);
+    const onConnect = useCallback((connection: Connection) => {
+        const source = connection.source;
+        const target = connection.target;
 
-            if (!sourceNode || !targetNode) return;
-            if (sourceNode.type === 'choice' && targetNode.type === 'choice') {
-                alert('Нельзя соединить Choice с Choice');
+        if (!source || !target || source === target) return;
+
+        const sourceNode = nodes.find((node) => node.id === source);
+        const targetNode = nodes.find((node) => node.id === target);
+
+        if (!sourceNode || !targetNode) return;
+
+        if (sourceNode.type === 'choice' && targetNode.type === 'choice') {
+            alert('Нельзя соединить Choice с Choice');
+            return;
+        }
+
+        // нельзя соединять вопрос → вопрос, если уже есть вопрос → ответ
+        if (
+            sourceNode.type === 'question' &&
+            targetNode.type === 'question'
+        ) {
+            const hasChoiceConnection = edges.some(
+                (e) =>
+                    e.source === source &&
+                    nodes.find((n) => n.id === e.target)?.type === 'choice'
+            );
+            if (hasChoiceConnection) {
+                alert('Нельзя соединить вопрос с другим вопросом, если уже есть связь с ответом');
                 return;
             }
+        }
 
-            setEdges((edges) =>
-                addEdge(
-                    {
-                        ...connection,
-                        markerEnd: {
-                            type: MarkerType.ArrowClosed,
-                        },
-                    },
-                    edges
-                )
-            );
-        },
-        [nodes]
-    );
+        setEdges((edges) => addEdge({
+            ...connection,
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+            },
+        }, edges));
+    }, [nodes, edges]);
 
     const updateStartNodeId = (id: string) => {
 
