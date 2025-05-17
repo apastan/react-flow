@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
 import '@xyflow/react/dist/style.css';
 import {
     addEdge,
@@ -31,25 +31,46 @@ const nodeTypes = {
 let id = 0;
 const getId = () => `node_${id++}`;
 
+type QuestionNodeData = {
+    isStartNode: boolean
+    questionDefault: string
+    responseTextDefault: string
+    onlyChoicesDefault: boolean
+    removeNode: (id: string) => void
+    updateStartNodeId: (id: string) => void
+}
+
+type ChoiceNodeData = {
+    choiceTextDefault: string
+    responseTextDefault: string
+    requestContactDefault: boolean
+    removeNode: (id: string) => void
+}
+
+export type QuestionNode = Node<QuestionNodeData, 'question'>;
+export type ChoiceNode = Node<ChoiceNodeData, 'choice'>;
+
+type AppNodes = Node<QuestionNodeData | ChoiceNodeData>[]
+
 export function DiagramBuilder() {
-    const [nodes, setNodes] = useState<Node[]>([]);
+    const [nodes, setNodes] = useState<AppNodes>([]);
+    console.log("Render DiagramBuilder", nodes)
     const [edges, setEdges] = useState<Edge[]>([]);
-    const [startNodeId, setStartNodeId] = useState<string | null>(null);
 
     const onNodesChange = useCallback(
-        (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds)),
+        (changes: NodeChange[]) => setNodes((nodes) => applyNodeChanges(changes, nodes)),
         []
     );
 
     const onEdgesChange = useCallback(
-        (changes: EdgeChange[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+        (changes: EdgeChange[]) => setEdges((edges) => applyEdgeChanges(changes, edges)),
         []
     );
 
     const onConnect = useCallback(
         (connection: Connection) => {
-            const sourceNode = nodes.find((n) => n.id === connection.source);
-            const targetNode = nodes.find((n) => n.id === connection.target);
+            const sourceNode = nodes.find((node) => node.id === connection.source);
+            const targetNode = nodes.find((node) => node.id === connection.target);
 
             if (!sourceNode || !targetNode) return;
             if (sourceNode.type === 'choice' && targetNode.type === 'choice') {
@@ -57,7 +78,7 @@ export function DiagramBuilder() {
                 return;
             }
 
-            setEdges((eds) =>
+            setEdges((edges) =>
                 addEdge(
                     {
                         ...connection,
@@ -65,41 +86,87 @@ export function DiagramBuilder() {
                             type: MarkerType.ArrowClosed,
                         },
                     },
-                    eds
+                    edges
                 )
             );
         },
         [nodes]
     );
 
+    const updateStartNodeId = (id: string) => {
+
+        // if (id === startNodeRef.current) return
+
+        setNodes(nodes => nodes.map(node => {
+            if (node.type === 'question' && 'isStartNode' in node.data) {
+                return {
+                    ...node,
+                    data: {
+                        ...node.data,
+                        isStartNode: node.id === id,
+                    },
+                };
+            }
+
+            return node;
+        }));
+    };
+
+    const removeNode = (id: string) => {
+        setNodes((nodes) => nodes.filter(node => node.id !== id));
+
+    }
+
     const addQuestionNode = () => {
         const newId = getId();
-        setNodes((nds) => [
-            ...nds,
-            {
+
+        // if (startNodeId === null) {
+        //     setStartNodeId(newId)
+        // }
+
+        setNodes((nodes) => {
+            const f =  nodes.some(node => node.type === 'question');
+
+            const newQuestionNode: Node<QuestionNodeData> = {
                 id: newId,
                 type: 'question',
                 position: { x: 100, y: 100 },
                 data: {
-                    isStart: startNodeId === null,
-                    setStartNodeId,
-                    startNodeId,
+                    isStartNode: !f,
+                    updateStartNodeId,
+                    questionDefault: "",
+                    responseTextDefault: "",
+                    onlyChoicesDefault: true,
+                    removeNode: removeNode
                 },
-            },
-        ]);
-        if (startNodeId === null) setStartNodeId(newId);
+            }
+
+            // startNodeRef.current = newId
+
+            return [
+                ...nodes,
+                newQuestionNode,
+            ]
+        });
     };
 
     const addChoiceNode = () => {
         const newId = getId();
-        setNodes((nds) => [
-            ...nds,
-            {
-                id: newId,
-                type: 'choice',
-                position: { x: 300, y: 100 },
-                data: {},
+        const newChoiceNode: Node<ChoiceNodeData> = {
+            id: newId,
+            type: 'choice',
+            position: { x: 100, y: 100 },
+            data: {
+                choiceTextDefault: "",
+                responseTextDefault: "",
+                requestContactDefault: false,
+                removeNode: removeNode,
             },
+        }
+
+        setNodes((nodes) => [
+            ...nodes,
+            newChoiceNode,
         ]);
     };
 
