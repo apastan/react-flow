@@ -1,19 +1,18 @@
-import {useCallback, useState} from 'react';
+import {useCallback} from 'react';
 import '@xyflow/react/dist/style.css';
 import {
     addEdge,
-    applyEdgeChanges,
-    applyNodeChanges,
     Background,
     type Connection,
     Controls,
     type Edge,
-    type EdgeChange, MarkerType,
+    MarkerType,
     MiniMap,
     type Node,
-    type NodeChange,
     ReactFlow,
     ReactFlowProvider,
+    useEdgesState,
+    useNodesState,
 } from '@xyflow/react';
 
 import {Button} from '@/components/ui/button';
@@ -52,19 +51,12 @@ export type ChoiceNode = Node<ChoiceNodeData, 'choice'>;
 type AppNodes = Node<QuestionNodeData | ChoiceNodeData>[]
 
 export function DiagramBuilder() {
-    const [nodes, setNodes] = useState<AppNodes>([]);
+    const initialNodes: AppNodes = []
+    const initialEdges: Edge[] = []
+
+    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     console.log("Render DiagramBuilder", nodes)
-    const [edges, setEdges] = useState<Edge[]>([]);
-
-    const onNodesChange = useCallback(
-        (changes: NodeChange[]) => setNodes((nodes) => applyNodeChanges(changes, nodes)),
-        []
-    );
-
-    const onEdgesChange = useCallback(
-        (changes: EdgeChange[]) => setEdges((edges) => applyEdgeChanges(changes, edges)),
-        []
-    );
 
     const onConnect = useCallback((connection: Connection) => {
         const source = connection.source;
@@ -124,9 +116,6 @@ export function DiagramBuilder() {
     }, [nodes, edges]);
 
     const updateStartNodeId = (id: string) => {
-
-        // if (id === startNodeRef.current) return
-
         setNodes(nodes => nodes.map(node => {
             if (node.type === 'question' && 'isStartNode' in node.data) {
                 return {
@@ -143,8 +132,15 @@ export function DiagramBuilder() {
     };
 
     const removeNode = (id: string) => {
-        setNodes((nodes) => nodes.filter(node => node.id !== id));
-
+        setNodes((nodes) => {
+            const startNode = nodes.find((node) => node.id === id && node.type === 'question');
+            // TODO - refactor - get rid of assertion
+            if ((startNode as QuestionNode | undefined)?.data?.isStartNode) {
+                alert('Вы удаляете стартовый вопрос - обязательно выберите другой вопрос в качестве стартового')
+            }
+            // TODO - refactor - O(n)
+            return nodes.filter(node => node.id !== id)
+        });
     }
 
     const addQuestionNode = () => {
