@@ -77,6 +77,7 @@ export function DiagramBuilder() {
 
         if (!sourceNode || !targetNode) return;
 
+        // Нельзя соединять ответ → ответ
         if (sourceNode.type === 'choice' && targetNode.type === 'choice') {
             alert('Нельзя соединить Choice с Choice');
             return;
@@ -94,6 +95,22 @@ export function DiagramBuilder() {
             );
             if (hasChoiceConnection) {
                 alert('Нельзя соединить вопрос с другим вопросом, если уже есть связь с ответом');
+                return;
+            }
+        }
+
+        // нельзя соединять вопрос → ответ, если уже есть вопрос → вопрос
+        if (
+            sourceNode.type === 'question' &&
+            targetNode.type === 'choice'
+        ) {
+            const hasQuestionConnection = edges.some(
+                (e) =>
+                    e.source === source &&
+                    nodes.find((n) => n.id === e.target)?.type === 'question'
+            );
+            if (hasQuestionConnection) {
+                alert('Нельзя соединить вопрос с ответом, если уже есть связь с другим вопросом');
                 return;
             }
         }
