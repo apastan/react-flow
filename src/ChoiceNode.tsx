@@ -29,7 +29,7 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
 
     const handleToggleResponse = () => {
         setShowResponse((state) => {
-            if (state ) {
+            if (state) {
                 if (responseTextRef.current) {
                     responseTextRef.current.value = ""
                 }
@@ -39,7 +39,7 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
         })
     }
 
-    const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #016630'};
+    const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #99a1af'};
 
     return (
         <div className="bg-[white] border border-gray-300 rounded-lg shadow-md p-2 w-72">

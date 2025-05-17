@@ -51,12 +51,18 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
         <div className="bg-[#f8f8f8] border border-gray-400 rounded-lg shadow-md p-2 w-72">
             <Handle type="target" position={Position.Top} style={handleStyles} />
             <div className="flex justify-between items-center mb-2">
-                <span className="font-semibold text-sm">Вопрос</span>
+                <div className={'flex'}>
+                    <span className="font-semibold text-sm mr-1">
+                        {isStartNode ? 'Стартовый вопрос' : 'Вопрос'}
+                    </span>
+                    <span className={'flex justify-center items-center'}>
+                        {isStartNode &&
+                            <Crown className="w-4 h-4 text-amber-600"/>
+                        }
+                    </span>
+                </div>
                 <div className="flex items-center gap-2">
-                    {isStartNode &&
-                        <Crown className="w-4 h-4"/>
-                    }
-                    <DropdownMenu>
+                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button size="icon" variant="ghost">
                                 <MoreVertical className="w-4 h-4" />
