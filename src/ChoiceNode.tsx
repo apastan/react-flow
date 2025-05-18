@@ -48,7 +48,7 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
                 <span className="font-semibold text-sm">Вариант ответа</span>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button size="sm" variant="ghost">
+                        <Button size="sm" className={'hover:bg-input/50'} variant="ghost">
                             <MoreVertical className="w-4 h-4" />
                         </Button>
                     </DropdownMenuTrigger>

@@ -1,7 +1,7 @@
 import {useRef, useState} from 'react';
 import {Handle, type NodeProps, Position, useEdges, useNodes} from "@xyflow/react";
 import {Button} from "@/components/ui/button.tsx";
-import {MoreVertical, MessageCircleReply, Crown, Trash} from "lucide-react";
+import {MoreVertical, MessageCircleReply, Crown, Trash, Network} from "lucide-react";
 import {Textarea} from "@/components/ui/textarea.tsx";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {
@@ -59,6 +59,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
                     </span>
                     <span className={'flex justify-center items-center'}>
                         {isStartNode &&
+                            // <Network className="w-4 h-4 text-amber-600"/>
                             <Crown className="w-4 h-4 text-amber-600"/>
                         }
                     </span>
@@ -66,7 +67,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
                 <div className="flex items-center gap-2">
                      <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button size="sm" variant="ghost">
+                            <Button size="sm" className={'hover:bg-input/50'} variant="ghost">
                                 <MoreVertical className="w-4 h-4" />
                             </Button>
                         </DropdownMenuTrigger>
