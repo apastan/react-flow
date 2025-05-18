@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import {memo, useRef, useState} from 'react';
 import {Handle, type NodeProps, Position} from "@xyflow/react";
 import {Button} from "@/components/ui/button.tsx";
 import {MessageCircleReply, MoreVertical, Trash} from "lucide-react";
@@ -11,11 +11,11 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
-import type {ChoiceNode} from "@/DiagramBuilder.tsx";
+import type {ChoiceNodeType} from "@/DiagramBuilder.tsx";
 
 const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #99a1af'};
 
-export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
+export const ChoiceNode = memo((props: NodeProps<ChoiceNodeType>)=> {
     const {id, data, targetPosition = Position.Top, sourcePosition = Position.Bottom} = props
     const {choiceTextDefault, responseTextDefault, requestContactDefault, removeNode} = data
     console.log(`Render ChoiceNode ${id}`)
@@ -91,4 +91,6 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
             <Handle type="source" position={sourcePosition} style={handleStyles} />
         </div>
     );
-}
+})
+
+ChoiceNode.displayName = "ChoiceNode";

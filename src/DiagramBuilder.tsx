@@ -93,8 +93,8 @@ type ChoiceNodeData = {
     removeNode: (id: string) => void
 }
 
-export type QuestionNode = Node<QuestionNodeData, 'question'>;
-export type ChoiceNode = Node<ChoiceNodeData, 'choice'>;
+export type QuestionNodeType = Node<QuestionNodeData, 'question'>;
+export type ChoiceNodeType = Node<ChoiceNodeData, 'choice'>;
 
 type AppNodes = Node<QuestionNodeData | ChoiceNodeData>[]
 
@@ -185,7 +185,7 @@ export function DiagramBuilder() {
         setNodes((nodes) => {
             const startNode = nodes.find((node) => node.id === id && node.type === 'question');
             // TODO - refactor - get rid of assertion
-            if ((startNode as QuestionNode | undefined)?.data?.isStartNode) {
+            if ((startNode as QuestionNodeType | undefined)?.data?.isStartNode) {
                 alert('Вы удаляете стартовый вопрос - обязательно выберите другой вопрос в качестве стартового')
             }
             // TODO - refactor - O(n)
@@ -207,7 +207,7 @@ export function DiagramBuilder() {
                     isStartNode: !hasQuestionNode,
                     updateStartNodeId,
                     questionDefault: "",
-                    responseTextDefault: "fffffffffffff",
+                    responseTextDefault: "",
                     onlyChoicesDefault: true,
                     removeNode: removeNode
                 },
@@ -228,7 +228,7 @@ export function DiagramBuilder() {
             position: { x: 100, y: 100 },
             data: {
                 choiceTextDefault: "",
-                responseTextDefault: "ggggggggggg",
+                responseTextDefault: "",
                 requestContactDefault: false,
                 removeNode: removeNode,
             },

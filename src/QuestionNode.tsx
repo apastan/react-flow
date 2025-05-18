@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import {memo, useRef, useState} from 'react';
 import {Handle, type NodeProps, Position, useEdges, useNodes} from "@xyflow/react";
 import {Button} from "@/components/ui/button.tsx";
 import {MoreVertical, MessageCircleReply, Crown, Trash} from "lucide-react";
@@ -11,13 +11,13 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import type {QuestionNode} from "@/DiagramBuilder.tsx";
+import type {QuestionNodeType} from "@/DiagramBuilder.tsx";
 
 const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #1a192b'};
 
 const ONLY_CHOICES_DEFAULT_VALUE = false
 
-export function QuestionNode(props: NodeProps<QuestionNode>) {
+export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
     const {id, data, targetPosition = Position.Top, sourcePosition = Position.Bottom} = props
     const {isStartNode, updateStartNodeId, questionDefault, responseTextDefault, onlyChoicesDefault, removeNode} = data
     console.log(`Render QuestionNode ${id}`)
@@ -117,4 +117,6 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
             <Handle type="source" position={sourcePosition}  style={handleStyles} />
         </div>
     );
-}
+})
+
+QuestionNode.displayName = "QuestionNode";
