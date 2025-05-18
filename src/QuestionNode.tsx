@@ -15,6 +15,8 @@ import type {QuestionNode} from "@/DiagramBuilder.tsx";
 
 const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #1a192b'};
 
+const ONLY_CHOICES_DEFAULT_VALUE = false
+
 export function QuestionNode(props: NodeProps<QuestionNode>) {
     const {id, data} = props
     const {isStartNode, updateStartNodeId, questionDefault, responseTextDefault, onlyChoicesDefault, removeNode} = data
@@ -25,7 +27,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
     const questionElementRef = useRef<HTMLTextAreaElement>(null)
     const responseInitialValue = useRef(responseTextDefault)
     const responseElementRef = useRef<HTMLTextAreaElement>(null)
-    const onlyChoicesInitialValue = useRef(onlyChoicesDefault)
+    const onlyChoicesInitialValue = useRef(onlyChoicesDefault ?? ONLY_CHOICES_DEFAULT_VALUE)
     const onlyChoicesElementRef = useRef<HTMLButtonElement>(null)
 
     const nodes = useNodes()
@@ -34,7 +36,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
     const hasConnectionWithChoiceNode = connections.some(edge => nodes.find(node => node.id === edge.target)?.type === 'choice')
 
     if (!hasConnectionWithChoiceNode) {
-        onlyChoicesInitialValue.current = false
+        onlyChoicesInitialValue.current = ONLY_CHOICES_DEFAULT_VALUE
     }
 
     const handleToggleResponse = () => {
