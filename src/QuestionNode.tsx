@@ -96,7 +96,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
                 <Textarea
                     defaultValue={questionDefault}
                     placeholder="Введите текст вопроса"
-                    className="text-sm px-1 py-0"
+                    className="text-sm px-1.5 py-0 resize-none"
                     ref={questionElementRef}
                 />
             </div>
@@ -104,7 +104,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
                 {showResponse && <Textarea
                     defaultValue={responseInitialValue.current}
                     placeholder="Response (необязательно)"
-                    className="text-sm px-1 py-0"
+                    className="text-sm px-1.5 py-0 resize-none"
                     ref={responseElementRef}
                 />}
             </div>

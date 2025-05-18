@@ -73,14 +73,14 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
                     defaultValue={choiceTextDefault}
                     ref={choiceTextRef}
                     placeholder="Введите текст ответа"
-                    className="text-sm px-1 py-0"
+                    className="text-sm px-1.5 py-0 resize-none"
                 />
             </div>
             <div className="mb-2">
                 {showResponse && <Textarea
                     defaultValue={responseTextInitial.current}
                     placeholder="Response (необязательно)"
-                    className="text-sm px-1 py-0"
+                    className="text-sm px-1.5 py-0 resize-none"
                     ref={responseTextRef}
                 />}
             </div>
