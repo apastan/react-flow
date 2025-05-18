@@ -1,5 +1,5 @@
 import {useRef, useState} from 'react';
-import {Handle, type NodeProps, Position} from "@xyflow/react";
+import {Handle, type NodeProps, Position, useEdges, useNodes, useReactFlow} from "@xyflow/react";
 import {Button} from "@/components/ui/button.tsx";
 import {MoreVertical, MessageCircleReply, Crown, Trash} from "lucide-react";
 import {Textarea} from "@/components/ui/textarea.tsx";
@@ -22,18 +22,28 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
 
     const [showResponse, setShowResponse] = useState<boolean>(!!responseTextDefault);
 
-    const questionRef = useRef<HTMLTextAreaElement>(null)
-    const questionResponseInitialRef = useRef(responseTextDefault)
-    const questionResponseRef = useRef<HTMLTextAreaElement>(null)
-    const onlyChoicesRef = useRef<HTMLButtonElement>(null)
+    const questionElementRef = useRef<HTMLTextAreaElement>(null)
+    const responseInitialValue = useRef(responseTextDefault)
+    const responseElementRef = useRef<HTMLTextAreaElement>(null)
+    const onlyChoicesInitialValue = useRef(onlyChoicesDefault)
+    const onlyChoicesElementRef = useRef<HTMLButtonElement>(null)
+
+    const nodes = useNodes()
+    const edges = useEdges()
+    const connections = edges.filter(edge => edge.source === id)
+    const hasConnectionWithChoiceNode = connections.some(edge => nodes.find(node => node.id === edge.target)?.type === 'choice')
+
+    if (!hasConnectionWithChoiceNode) {
+        onlyChoicesInitialValue.current = false
+    }
 
     const handleToggleResponse = () => {
         setShowResponse((state) => {
             if (state) {
-                if (questionResponseRef.current) {
-                    questionResponseRef.current.value = ""
+                if (responseElementRef.current) {
+                    responseElementRef.current.value = ""
                 }
-                questionResponseInitialRef.current = ""
+                responseInitialValue.current = ""
             }
             return !state
         })
@@ -86,21 +96,21 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
                     defaultValue={questionDefault}
                     placeholder="Введите текст вопроса"
                     className="text-sm"
-                    ref={questionRef}
+                    ref={questionElementRef}
                 />
             </div>
             <div className="mb-2">
                 {showResponse && <Textarea
-                    defaultValue={questionResponseInitialRef.current}
+                    defaultValue={responseInitialValue.current}
                     placeholder="Response (необязательно)"
                     className="text-sm"
-                    ref={questionResponseRef}
+                    ref={responseElementRef}
                 />}
             </div>
-            <div className="flex items-center gap-2">
-                <Checkbox id={`only_choices_${id}`} defaultChecked={onlyChoicesDefault} ref={onlyChoicesRef}/>
+            {hasConnectionWithChoiceNode && <div className="flex items-center gap-2">
+                <Checkbox id={`only_choices_${id}`} defaultChecked={onlyChoicesInitialValue.current} ref={onlyChoicesElementRef}/>
                 <label htmlFor={`only_choices_${id}`} className="text-sm">Только выбор из вариантов</label>
-            </div>
+            </div>}
             <Handle type="source" position={Position.Bottom}  style={handleStyles} />
         </div>
     );

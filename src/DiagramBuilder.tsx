@@ -13,6 +13,7 @@ import {
     ReactFlowProvider,
     useEdgesState,
     useNodesState,
+    useReactFlow,
 } from '@xyflow/react';
 
 import {Button} from '@/components/ui/button';
@@ -55,7 +56,9 @@ export function DiagramBuilder() {
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-    console.log("Render DiagramBuilder", nodes)
+    console.log("Render DiagramBuilder, nodes:", nodes)
+    console.log("Render DiagramBuilder, edges:", edges)
+
 
     const onConnect = useCallback((connection: Connection) => {
         const source = connection.source;
