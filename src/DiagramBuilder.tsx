@@ -218,6 +218,7 @@ export function DiagramBuilder() {
                         onConnect={onConnect}
                         nodeTypes={nodeTypes}
                         fitView
+                        style={{ backgroundColor: '#F7F9FB' }}
                     >
                         <MiniMap />
                         <Controls />
