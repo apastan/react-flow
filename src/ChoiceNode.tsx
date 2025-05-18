@@ -27,8 +27,6 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
     const responseTextRef = useRef<HTMLTextAreaElement>(null)
     const requestContactRef = useRef<HTMLButtonElement>(null)
 
-    const handleRemoveNode = () => removeNode(id)
-
     const handleToggleResponse = () => {
         setShowResponse((state) => {
             if (state) {
@@ -62,7 +60,7 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
                                 {" "}
                                 Response
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={handleRemoveNode}>
+                            <DropdownMenuItem onClick={() => removeNode(id)}>
                                 <Trash className="w-4 h-4" />
                                 Удалить ответ
                             </DropdownMenuItem>

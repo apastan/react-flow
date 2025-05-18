@@ -27,14 +27,6 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
     const questionResponseRef = useRef<HTMLTextAreaElement>(null)
     const onlyChoicesRef = useRef<HTMLButtonElement>(null)
 
-    const handleChangeStartNode = () => {
-        if (!isStartNode) {
-            updateStartNodeId(id);
-        }
-    };
-
-    const handleRemoveNode = () => removeNode(id)
-
     const handleToggleResponse = () => {
         setShowResponse((state) => {
             if (state) {
@@ -76,11 +68,11 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
                                     {" "}
                                     Response
                                    </DropdownMenuItem>
-                                {!isStartNode && <DropdownMenuItem onClick={handleChangeStartNode}>
+                                {!isStartNode && <DropdownMenuItem onClick={() => updateStartNodeId(id)}>
                                     <Crown className="w-4 h-4"/>
                                     Сделать стартовым
                                    </DropdownMenuItem>}
-                                <DropdownMenuItem onClick={handleRemoveNode}>
+                                <DropdownMenuItem onClick={() => removeNode(id)}>
                                     <Trash className="w-4 h-4" />
                                     Удалить вопрос
                                 </DropdownMenuItem>
