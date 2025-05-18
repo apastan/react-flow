@@ -17,17 +17,16 @@ import {
 
 import {Button} from '@/components/ui/button';
 import {Plus} from 'lucide-react';
-
 import {QuestionNode} from './QuestionNode';
 import {ChoiceNode} from './ChoiceNode';
+import {nanoid} from 'nanoid'
 
 const nodeTypes = {
     question: QuestionNode,
     choice: ChoiceNode,
 };
 
-let id = 0;
-const getId = () => `node_${id++}`;
+const getId = () => `${nanoid(3)}`;
 
 type QuestionNodeData = {
     isStartNode: boolean
