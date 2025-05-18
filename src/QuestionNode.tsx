@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import type {QuestionNode} from "@/DiagramBuilder.tsx";
 
+const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #1a192b'};
+
 export function QuestionNode(props: NodeProps<QuestionNode>) {
     const {id, data} = props
     const {isStartNode, updateStartNodeId, questionDefault, responseTextDefault, onlyChoicesDefault, removeNode} = data
@@ -44,8 +46,6 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
             return !state
         })
     }
-
-    const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #1a192b'};
 
     return (
         <div className="bg-[#f8f8f8] border border-gray-400 rounded-lg shadow-md p-2 w-72">

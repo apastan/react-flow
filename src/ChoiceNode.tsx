@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu.tsx";
 import type {ChoiceNode} from "@/DiagramBuilder.tsx";
 
+const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #99a1af'};
+
 export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
     const {id, data} = props
     const {choiceTextDefault, responseTextDefault, requestContactDefault, removeNode} = data
@@ -38,8 +40,6 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
             return !state
         })
     }
-
-    const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #99a1af'};
 
     return (
         <div className="bg-[white] border border-gray-300 rounded-lg shadow-md p-2 w-72">

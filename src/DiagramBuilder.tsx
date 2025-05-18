@@ -199,10 +199,10 @@ export function DiagramBuilder() {
         <div className="h-screen w-full flex flex-col">
             <div className="p-4 flex gap-2 bg-gray-100 border-b">
                 <Button onClick={addQuestionNode} variant="default">
-                    <Plus className="w-4 h-4 mr-2" /> Добавить вопрос
+                    <Plus className="w-4 h-4" /> Добавить вопрос
                 </Button>
                 <Button onClick={addChoiceNode} variant="outline">
-                    <Plus className="w-4 h-4 mr-2" /> Добавить вариант ответа
+                    <Plus className="w-4 h-4" /> Добавить вариант ответа
                 </Button>
             </div>
             <div className="flex-1">
