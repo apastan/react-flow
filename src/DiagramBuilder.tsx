@@ -13,7 +13,6 @@ import {
     ReactFlowProvider,
     useEdgesState,
     useNodesState,
-    useReactFlow,
 } from '@xyflow/react';
 
 import {Button} from '@/components/ui/button';
@@ -148,19 +147,15 @@ export function DiagramBuilder() {
     const addQuestionNode = () => {
         const newId = getId();
 
-        // if (startNodeId === null) {
-        //     setStartNodeId(newId)
-        // }
-
         setNodes((nodes) => {
-            const f =  nodes.some(node => node.type === 'question');
+            const hasQuestionNode = nodes.some(node => node.type === 'question');
 
             const newQuestionNode: Node<QuestionNodeData> = {
                 id: newId,
                 type: 'question',
                 position: { x: 100, y: 100 },
                 data: {
-                    isStartNode: !f,
+                    isStartNode: !hasQuestionNode,
                     updateStartNodeId,
                     questionDefault: "",
                     responseTextDefault: "fffffffffffff",
@@ -168,8 +163,6 @@ export function DiagramBuilder() {
                     removeNode: removeNode
                 },
             }
-
-            // startNodeRef.current = newId
 
             return [
                 ...nodes,
