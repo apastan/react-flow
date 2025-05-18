@@ -10,8 +10,8 @@ import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import type {QuestionNodeType} from "@/DiagramBuilder.tsx";
+} from "@/components/ui/dropdown-menu.tsx"
+import type {QuestionNodeType} from "../types";
 
 const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #1a192b'};
 

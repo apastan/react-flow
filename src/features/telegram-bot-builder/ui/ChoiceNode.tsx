@@ -11,7 +11,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
-import type {ChoiceNodeType} from "@/DiagramBuilder.tsx";
+import type {ChoiceNodeType} from "../types";
 
 const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #99a1af'};
 
