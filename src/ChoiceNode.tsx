@@ -48,7 +48,7 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
                 <span className="font-semibold text-sm">Вариант ответа</span>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button size="icon" variant="ghost">
+                        <Button size="sm" variant="ghost">
                             <MoreVertical className="w-4 h-4" />
                         </Button>
                     </DropdownMenuTrigger>
@@ -73,14 +73,14 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
                     defaultValue={choiceTextDefault}
                     ref={choiceTextRef}
                     placeholder="Введите текст ответа"
-                    className="text-sm"
+                    className="text-sm px-1 py-0"
                 />
             </div>
             <div className="mb-2">
                 {showResponse && <Textarea
                     defaultValue={responseTextInitial.current}
                     placeholder="Response (необязательно)"
-                    className="text-sm"
+                    className="text-sm px-1 py-0"
                     ref={responseTextRef}
                 />}
             </div>

@@ -1,5 +1,5 @@
 import {useRef, useState} from 'react';
-import {Handle, type NodeProps, Position, useEdges, useNodes, useReactFlow} from "@xyflow/react";
+import {Handle, type NodeProps, Position, useEdges, useNodes} from "@xyflow/react";
 import {Button} from "@/components/ui/button.tsx";
 import {MoreVertical, MessageCircleReply, Crown, Trash} from "lucide-react";
 import {Textarea} from "@/components/ui/textarea.tsx";
@@ -66,7 +66,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
                 <div className="flex items-center gap-2">
                      <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button size="icon" variant="ghost">
+                            <Button size="sm" variant="ghost">
                                 <MoreVertical className="w-4 h-4" />
                             </Button>
                         </DropdownMenuTrigger>
@@ -95,7 +95,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
                 <Textarea
                     defaultValue={questionDefault}
                     placeholder="Введите текст вопроса"
-                    className="text-sm"
+                    className="text-sm px-1 py-0"
                     ref={questionElementRef}
                 />
             </div>
@@ -103,7 +103,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
                 {showResponse && <Textarea
                     defaultValue={responseInitialValue.current}
                     placeholder="Response (необязательно)"
-                    className="text-sm"
+                    className="text-sm px-1 py-0"
                     ref={responseElementRef}
                 />}
             </div>
