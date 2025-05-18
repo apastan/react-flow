@@ -21,7 +21,7 @@ import {Plus} from 'lucide-react';
 import {QuestionNode} from './QuestionNode.tsx';
 import {ChoiceNode} from './ChoiceNode.tsx';
 import type {AppNodes, ChoiceNodeData, QuestionNodeData, QuestionNodeType} from "../types";
-import {getId, getLayoutedElements} from "../lib";
+import {getId, getLayoutedElements, nodeWidth} from "../lib";
 
 const nodeTypes = {
     question: QuestionNode,
@@ -152,22 +152,33 @@ export function DiagramBuilder() {
 
     const addChoiceNode = () => {
         const newId = getId();
-        const newChoiceNode: Node<ChoiceNodeData> = {
-            id: newId,
-            type: 'choice',
-            position: { x: 100, y: 100 },
-            data: {
-                choiceTextDefault: "",
-                responseTextDefault: "",
-                requestContactDefault: false,
-                removeNode: removeNode,
-            },
-        }
 
-        setNodes((nodes) => [
-            ...nodes,
-            newChoiceNode,
-        ]);
+        setNodes((nodes) => {
+            const lastNode = nodes[nodes.length - 1];
+
+
+            const position =  {
+                x: (lastNode?.position?.x ?? 0) + (lastNode?.width ?? nodeWidth),
+                y: (lastNode?.position?.y ?? 0),
+            }
+
+            const newChoiceNode: Node<ChoiceNodeData> = {
+                id: newId,
+                type: 'choice',
+                position: position,
+                data: {
+                    choiceTextDefault: "",
+                    responseTextDefault: "",
+                    requestContactDefault: false,
+                    removeNode: removeNode,
+                },
+            }
+
+            return [
+                ...nodes,
+                newChoiceNode,
+            ]
+        });
     };
 
     const onLayout = useCallback(

@@ -4,8 +4,8 @@ import type {AppNodes} from "@/features/telegram-bot-builder/types";
 
 const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
-const nodeWidth = 300;
-const nodeHeight = 230;
+export const nodeWidth = 300;
+export const nodeHeight = 230;
 
 export const getLayoutedElements = (nodes: AppNodes, edges: Edge[], direction = 'TB') => {
     const isHorizontal = direction === 'LR';
