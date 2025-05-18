@@ -16,7 +16,7 @@ import type {ChoiceNode} from "@/DiagramBuilder.tsx";
 const handleStyles = {background: 'white', height: '10px', width: '10px', border: '2px solid #99a1af'};
 
 export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
-    const {id, data} = props
+    const {id, data, targetPosition = Position.Top, sourcePosition = Position.Bottom} = props
     const {choiceTextDefault, responseTextDefault, requestContactDefault, removeNode} = data
     console.log(`Render ChoiceNode ${id}`)
 
@@ -41,7 +41,7 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
 
     return (
         <div className="bg-[white] border border-gray-300 rounded-lg shadow-md p-2 w-72">
-            <Handle type="target" position={Position.Top} style={handleStyles}/>
+            <Handle type="target" position={targetPosition} style={handleStyles}/>
             {/*--xy-handle-background-color*/}
             {/*--xy-handle-border-color is not defined*/}
             <div className="flex justify-between items-center mb-2">
@@ -88,7 +88,7 @@ export  function ChoiceNode(props: NodeProps<ChoiceNode>) {
                 <Checkbox id={`request_contact_${id}`} defaultChecked={requestContactDefault} ref={requestContactRef} />
                 <label htmlFor={`request_contact_${id}`} className="text-sm">Запросить контакт</label>
             </div>
-            <Handle type="source" position={Position.Bottom} style={handleStyles} />
+            <Handle type="source" position={sourcePosition} style={handleStyles} />
         </div>
     );
 }

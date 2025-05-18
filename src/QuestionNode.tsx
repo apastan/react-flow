@@ -1,7 +1,7 @@
 import {useRef, useState} from 'react';
 import {Handle, type NodeProps, Position, useEdges, useNodes} from "@xyflow/react";
 import {Button} from "@/components/ui/button.tsx";
-import {MoreVertical, MessageCircleReply, Crown, Trash, Network} from "lucide-react";
+import {MoreVertical, MessageCircleReply, Crown, Trash} from "lucide-react";
 import {Textarea} from "@/components/ui/textarea.tsx";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {
@@ -18,7 +18,7 @@ const handleStyles = {background: 'white', height: '10px', width: '10px', border
 const ONLY_CHOICES_DEFAULT_VALUE = false
 
 export function QuestionNode(props: NodeProps<QuestionNode>) {
-    const {id, data} = props
+    const {id, data, targetPosition = Position.Top, sourcePosition = Position.Bottom} = props
     const {isStartNode, updateStartNodeId, questionDefault, responseTextDefault, onlyChoicesDefault, removeNode} = data
     console.log(`Render QuestionNode ${id}`)
 
@@ -53,7 +53,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
 
     return (
         <div className="bg-[#f8f8f8] border border-gray-400 rounded-lg shadow-md p-2 w-72">
-            <Handle type="target" position={Position.Top} style={handleStyles} />
+            <Handle type="target" position={targetPosition} style={handleStyles} />
             <div className="flex justify-between items-center mb-2">
                 <div className={'flex'}>
                     <span className="font-semibold text-sm mr-1">
@@ -114,7 +114,7 @@ export function QuestionNode(props: NodeProps<QuestionNode>) {
                 <Checkbox id={`only_choices_${id}`} defaultChecked={onlyChoicesInitialValue.current} ref={onlyChoicesElementRef}/>
                 <label htmlFor={`only_choices_${id}`} className="text-sm">Только выбор из вариантов</label>
             </div>}
-            <Handle type="source" position={Position.Bottom}  style={handleStyles} />
+            <Handle type="source" position={sourcePosition}  style={handleStyles} />
         </div>
     );
 }

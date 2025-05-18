@@ -4,15 +4,18 @@ import {
     addEdge,
     Background,
     type Connection,
+    ConnectionLineType,
     Controls,
     type Edge,
-    MarkerType,
     MiniMap,
     type Node,
+    Panel,
+    Position,
     ReactFlow,
     ReactFlowProvider,
     useEdgesState,
     useNodesState,
+    type XYPosition,
 } from '@xyflow/react';
 
 import {Button} from '@/components/ui/button';
@@ -20,6 +23,8 @@ import {Plus} from 'lucide-react';
 import {QuestionNode} from './QuestionNode';
 import {ChoiceNode} from './ChoiceNode';
 import {nanoid} from 'nanoid'
+import dagre from '@dagrejs/dagre';
+
 
 const nodeTypes = {
     question: QuestionNode,
@@ -27,6 +32,50 @@ const nodeTypes = {
 };
 
 const getId = () => `${nanoid(3)}`;
+
+const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
+
+const nodeWidth = 300;
+const nodeHeight = 230;
+
+const getLayoutedElements = (nodes: AppNodes, edges: Edge[], direction = 'TB') => {
+    const isHorizontal = direction === 'LR';
+    dagreGraph.setGraph({ rankdir: direction });
+
+    nodes.forEach((node) => {
+        dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+    });
+
+    edges.forEach((edge) => {
+        dagreGraph.setEdge(edge.source, edge.target);
+    });
+
+    dagre.layout(dagreGraph);
+
+    const newNodes: AppNodes = nodes.map((node) => {
+        const nodeWithPosition = dagreGraph.node(node.id);
+
+        const positions: {targetPosition: Position, sourcePosition: Position, position: XYPosition} = {
+            targetPosition: isHorizontal ? Position.Left : Position.Top,
+            sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
+            // We are shifting the dagre node position (anchor=center center) to the top left
+            // so it matches the React Flow node anchor point (top left).
+            position: {
+                x: nodeWithPosition.x - nodeWidth / 2,
+                y: nodeWithPosition.y - nodeHeight / 2,
+            },
+        }
+
+        const newNode = {
+            ...node,
+            ...positions
+        };
+
+        return newNode;
+    }) as AppNodes;
+
+    return { nodes: newNodes, edges };
+};
 
 type QuestionNodeData = {
     isStartNode: boolean
@@ -110,9 +159,9 @@ export function DiagramBuilder() {
 
         setEdges((edges) => addEdge({
             ...connection,
-            markerEnd: {
-                type: MarkerType.ArrowClosed,
-            },
+            // markerEnd: {
+            //     type: MarkerType.ArrowClosed,
+            // },
         }, edges));
     }, [nodes, edges]);
 
@@ -191,6 +240,20 @@ export function DiagramBuilder() {
         ]);
     };
 
+    const onLayout = useCallback(
+        (direction: string) => {
+            const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+                nodes,
+                edges,
+                direction,
+            );
+
+            setNodes([...layoutedNodes]);
+            setEdges([...layoutedEdges]);
+        },
+        [nodes, edges],
+    );
+
     return (
         <div className="h-screen w-full flex flex-col">
             <div className="p-4 flex gap-2 bg-gray-100 border-b">
@@ -211,8 +274,17 @@ export function DiagramBuilder() {
                         onConnect={onConnect}
                         nodeTypes={nodeTypes}
                         fitView
+                        connectionLineType={ConnectionLineType.SimpleBezier} // TODO
                         style={{ backgroundColor: '#F7F9FB' }}
                     >
+                        <Panel position="top-right">
+                            <Button variant={'outline'} onClick={() => onLayout('TB')}>
+                                Вертикально
+                            </Button>
+                            <Button variant={'outline'}  onClick={() => onLayout('LR')}>
+                                Горизонтально
+                            </Button>
+                        </Panel>
                         <MiniMap />
                         <Controls />
                         <Background gap={12} />
