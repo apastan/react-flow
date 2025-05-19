@@ -2,7 +2,6 @@ import dagre from '@dagrejs/dagre'
 import { type Edge, Position, type XYPosition } from '@xyflow/react'
 import type { AppNodes } from '@/features/telegram-bot-builder/types'
 
-const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
 
 export const nodeWidth = 300
 export const nodeHeight = 230
@@ -12,6 +11,8 @@ export const getLayoutedElements = (
   edges: Edge[],
   direction = 'TB'
 ) => {
+  const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
+
   const isHorizontal = direction === 'LR'
   dagreGraph.setGraph({ rankdir: direction })
 
