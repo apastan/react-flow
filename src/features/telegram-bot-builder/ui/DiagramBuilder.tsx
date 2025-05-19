@@ -50,8 +50,7 @@ export function DiagramBuilder() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     const isEmpty = nodes.length === 0;
-    console.log("Render DiagramBuilder, nodes:", nodes)
-    console.log("Render DiagramBuilder, edges:", edges)
+    console.log("Render DiagramBuilder:", nodes, edges)
 
     const [dialogOpen, setDialogOpen] = useState<boolean>(false)
     const dialogContentRef = useRef<DialogContent>(null)
@@ -164,11 +163,6 @@ export function DiagramBuilder() {
         });
     }
 
-    const clear = () => {
-        setNodes([])
-        setEdges([])
-    }
-
     const addQuestionNode = () => {
         const newId = getId();
 
@@ -227,8 +221,12 @@ export function DiagramBuilder() {
         });
     };
 
-    const onLayout = useCallback(
-        (direction: string) => {
+    const clear = () => {
+        setNodes([])
+        setEdges([])
+    }
+
+    const onLayout = (direction: string) => {
             const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
                 nodes,
                 edges,
@@ -237,9 +235,7 @@ export function DiagramBuilder() {
 
             setNodes([...layoutedNodes]);
             setEdges([...layoutedEdges]);
-        },
-        [nodes, edges],
-    );
+        }
 
     return (
         <>
