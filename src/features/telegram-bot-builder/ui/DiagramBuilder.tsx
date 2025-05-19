@@ -135,6 +135,9 @@ export function DiagramBuilder() {
             //     type: MarkerType.ArrowClosed,
             // },
             type: 'button',
+            data: {
+              setEdges,
+            },
           },
           edges
         )
@@ -143,74 +146,23 @@ export function DiagramBuilder() {
     [nodes, edges]
   )
 
-  // TODO - временно обернул в useCallback
-  const updateStartNode = useCallback(
-    (id: string) => {
-      setNodes((nodes) =>
-        nodes.map((node) => {
-          if (node.type === 'question' && 'isStartNode' in node.data) {
-            const shouldBeStart = node.id === id
-            const isCurrentlyStart = node.data.isStartNode === true
-
-            if (shouldBeStart !== isCurrentlyStart) {
-              return {
-                ...node,
-                data: {
-                  ...node.data,
-                  isStartNode: shouldBeStart,
-                },
-              }
-            }
-          }
-
-          return node
-        })
-      )
-    },
-    [setNodes]
-  )
-
-  // TODO - временно обернул в useCallback
-  const removeNode = useCallback(
-    (id: string, isStartNode?: boolean) => {
-      setNodes((nodes) => {
-        if (isStartNode) {
-          showDialog({
-            title: 'Будьте внимательны',
-            description:
-              'Вы удалили стартовый вопрос - обязательно выберите один из вопроса в качестве в качестве стартового.',
-          })
-        }
-
-        return nodes.filter((node) => node.id !== id)
-      })
-
-      setEdges((edges) =>
-        edges.filter((edge) => edge.source !== id && edge.target !== id)
-      )
-    },
-    [setNodes, setEdges]
-  )
-
   const addQuestionNode = () => {
-    const newId = getId()
-
     setNodes((nodes) => {
       const hasQuestionNode = nodes.some((node) => node.type === 'question')
+      const lastNode = nodes[nodes.length - 1]
 
       const newQuestionNode: Node<QuestionNodeData> = {
-        id: newId,
+        id: getId(),
         type: 'question',
-        position: { x: 100, y: 100 },
+        position: {
+          x: (lastNode?.position?.x ?? 0) + (lastNode?.width ?? nodeWidth),
+          y: lastNode?.position?.y ?? 0,
+        },
         data: {
           isStartNode: !hasQuestionNode,
-          updateStartNode,
           questionDefault: '',
           responseTextDefault: '',
           onlyChoicesDefault: true,
-          removeNode,
-          nodes,
-          edges,
         },
       }
 
@@ -219,25 +171,20 @@ export function DiagramBuilder() {
   }
 
   const addChoiceNode = () => {
-    const newId = getId()
-
     setNodes((nodes) => {
       const lastNode = nodes[nodes.length - 1]
 
-      const position = {
-        x: (lastNode?.position?.x ?? 0) + (lastNode?.width ?? nodeWidth),
-        y: lastNode?.position?.y ?? 0,
-      }
-
       const newChoiceNode: Node<ChoiceNodeData> = {
-        id: newId,
+        id: getId(),
         type: 'choice',
-        position: position,
+        position: {
+          x: (lastNode?.position?.x ?? 0) + (lastNode?.width ?? nodeWidth),
+          y: lastNode?.position?.y ?? 0,
+        },
         data: {
           choiceTextDefault: '',
           responseTextDefault: '',
           requestContactDefault: false,
-          removeNode,
         },
       }
 

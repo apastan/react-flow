@@ -1,5 +1,5 @@
 import { memo, useRef, useState } from 'react'
-import { Handle, type NodeProps, Position } from '@xyflow/react'
+import { Handle, type NodeProps, Position, useReactFlow } from '@xyflow/react'
 import { Button } from '@/components/ui/button.tsx'
 import {
   Crown,
@@ -23,6 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover.tsx'
+import { useDeleteNodeEdges } from '@/features/telegram-bot-builder/hooks'
 
 const handleStyles = {
   background: 'white',
@@ -42,15 +43,12 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
   } = props
   const {
     isStartNode,
-    updateStartNode,
     questionDefault,
     responseTextDefault,
     onlyChoicesDefault,
-    removeNode,
-    nodes,
-    edges,
   } = data
   console.log(`Render QuestionNode ${id}`)
+  const { getEdges, getNodes, setNodes } = useReactFlow()
 
   const [showResponse, setShowResponse] =
     useState<boolean>(!!responseTextDefault)
@@ -63,9 +61,10 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
   )
   const onlyChoicesElementRef = useRef<HTMLButtonElement>(null)
 
-  const connections = edges.filter((edge) => edge.source === id)
+  const connections = getEdges().filter((edge) => edge.source === id)
   const hasConnectionWithChoiceNode = connections.some(
-    (edge) => nodes.find((node) => node.id === edge.target)?.type === 'choice'
+    (edge) =>
+      getNodes().find((node) => node.id === edge.target)?.type === 'choice'
   )
 
   if (!hasConnectionWithChoiceNode) {
@@ -83,6 +82,31 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
       return !state
     })
   }
+
+  const handleUpdateStartNode = (id: string) => {
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.type === 'question' && 'isStartNode' in node.data) {
+          const shouldBeStart = node.id === id
+          const isCurrentlyStart = node.data.isStartNode === true
+
+          if (shouldBeStart !== isCurrentlyStart) {
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                isStartNode: shouldBeStart,
+              },
+            }
+          }
+        }
+
+        return node
+      })
+    )
+  }
+
+  const { removeNodeEdges } = useDeleteNodeEdges()
 
   return (
     <div className="bg-[#f8f8f8] border border-gray-400 rounded-lg shadow-md p-2 w-72">
@@ -113,12 +137,12 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
                   {showResponse ? 'Удалить' : 'Добавить'} Response
                 </DropdownMenuItem>
                 {!isStartNode && (
-                  <DropdownMenuItem onClick={() => updateStartNode(id)}>
+                  <DropdownMenuItem onClick={() => handleUpdateStartNode(id)}>
                     <Crown className="w-4 h-4" />
                     Сделать стартовым
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={() => removeNode(id, isStartNode)}>
+                <DropdownMenuItem onClick={() => removeNodeEdges(id)}>
                   <Trash className="w-4 h-4" />
                   Удалить вопрос
                 </DropdownMenuItem>

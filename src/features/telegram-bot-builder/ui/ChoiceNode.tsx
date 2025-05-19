@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx'
 import type { ChoiceNodeType } from '../types'
+import { useDeleteNodeEdges } from '@/features/telegram-bot-builder/hooks'
 
 const handleStyles = {
   background: 'white',
@@ -27,12 +28,7 @@ export const ChoiceNode = memo((props: NodeProps<ChoiceNodeType>) => {
     targetPosition = Position.Top,
     sourcePosition = Position.Bottom,
   } = props
-  const {
-    choiceTextDefault,
-    responseTextDefault,
-    requestContactDefault,
-    removeNode,
-  } = data
+  const { choiceTextDefault, responseTextDefault, requestContactDefault } = data
   console.log(`Render ChoiceNode ${id}`)
 
   const [showResponse, setShowResponse] =
@@ -55,6 +51,8 @@ export const ChoiceNode = memo((props: NodeProps<ChoiceNodeType>) => {
     })
   }
 
+  const { removeNodeEdges } = useDeleteNodeEdges()
+
   return (
     <div className="bg-[white] border border-gray-300 rounded-lg shadow-md p-2 w-72">
       <Handle type="target" position={targetPosition} style={handleStyles} />
@@ -74,7 +72,7 @@ export const ChoiceNode = memo((props: NodeProps<ChoiceNodeType>) => {
                 <MessageCircleReply className="w-4 h-4" />
                 {showResponse ? 'Удалить' : 'Добавить'} Response
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => removeNode(id)}>
+              <DropdownMenuItem onClick={() => removeNodeEdges(id)}>
                 <Trash className="w-4 h-4" />
                 Удалить ответ
               </DropdownMenuItem>
