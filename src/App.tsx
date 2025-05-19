@@ -1,10 +1,7 @@
-import {DiagramBuilder} from "@/features/telegram-bot-builder/ui";
+import { DiagramBuilder } from '@/features/telegram-bot-builder/ui'
 
 function App() {
-
-  return (
-    <DiagramBuilder/>
-  )
+  return <DiagramBuilder />
 }
 
 export default App

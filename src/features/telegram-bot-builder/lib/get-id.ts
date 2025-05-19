@@ -1,3 +1,3 @@
-import {nanoid} from "nanoid";
+import { nanoid } from 'nanoid'
 
-export const getId = () => `${nanoid(3)}`;
+export const getId = () => `${nanoid(3)}`

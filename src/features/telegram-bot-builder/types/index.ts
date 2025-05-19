@@ -1,23 +1,22 @@
-import type {Node} from "@xyflow/react";
+import type { Node } from '@xyflow/react'
 
 export type QuestionNodeData = {
-    isStartNode: boolean
-    questionDefault: string
-    responseTextDefault: string
-    onlyChoicesDefault: boolean
-    removeNode: (id: string) => void
-    updateStartNodeId: (id: string) => void
+  isStartNode: boolean
+  questionDefault: string
+  responseTextDefault: string
+  onlyChoicesDefault: boolean
+  removeNode: (id: string) => void
+  updateStartNodeId: (id: string) => void
 }
 
 export type ChoiceNodeData = {
-    choiceTextDefault: string
-    responseTextDefault: string
-    requestContactDefault: boolean
-    removeNode: (id: string) => void
+  choiceTextDefault: string
+  responseTextDefault: string
+  requestContactDefault: boolean
+  removeNode: (id: string) => void
 }
 
-export type QuestionNodeType = Node<QuestionNodeData, 'question'>;
-export type ChoiceNodeType = Node<ChoiceNodeData, 'choice'>;
+export type QuestionNodeType = Node<QuestionNodeData, 'question'>
+export type ChoiceNodeType = Node<ChoiceNodeData, 'choice'>
 
 export type AppNodes = Node<QuestionNodeData | ChoiceNodeData>[]
-
