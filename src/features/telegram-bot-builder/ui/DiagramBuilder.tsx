@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import {useCallback, useRef, useState} from 'react'
 import '@xyflow/react/dist/style.css'
 import {
   addEdge,
@@ -7,7 +7,6 @@ import {
   ConnectionLineType,
   Controls,
   type Edge,
-  type EdgeBase,
   getOutgoers,
   MiniMap,
   type Node,
@@ -18,18 +17,13 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 
-import { Button } from '@/components/ui/button.tsx'
-import { Plus, Trash } from 'lucide-react'
-import { QuestionNode } from './QuestionNode.tsx'
-import { ChoiceNode } from './ChoiceNode.tsx'
-import { ButtonEdge } from './ButtonEdge.tsx'
-import type {
-  AppNode,
-  AppNodes,
-  ChoiceNodeData,
-  QuestionNodeData,
-} from '../types'
-import { getId, getLayoutedElements, nodeWidth } from '../lib'
+import {Button} from '@/components/ui/button.tsx'
+import {Plus, Trash} from 'lucide-react'
+import {QuestionNode} from './QuestionNode.tsx'
+import {ChoiceNode} from './ChoiceNode.tsx'
+import {ButtonEdge} from './ButtonEdge.tsx'
+import type {AppNodes, ChoiceNodeData, QuestionNodeData,} from '../types'
+import {getId, getLayoutedElements, nodeWidth} from '../lib'
 import {
   Dialog,
   DialogClose,
@@ -161,13 +155,18 @@ export function DiagramBuilder() {
   )
 
   const isValidConnection = useCallback(
-    (connection: EdgeBase | Connection) => {
+    (connection: Edge | Connection) => {
       // we are using getNodes and getEdges helpers here
       // to make sure we create isValidConnection function only once
       const nodes = getNodes()
       const edges = getEdges()
       const target = nodes.find((node) => node.id === connection.target)
-      const hasCycle = (node: AppNode, visited = new Set()) => {
+
+      if (!target) {
+        return false
+      }
+
+      const hasCycle = (node: Node, visited = new Set()) => {
         if (visited.has(node.id)) return false
 
         visited.add(node.id)
@@ -178,7 +177,7 @@ export function DiagramBuilder() {
         }
       }
 
-      if (target.id === connection.source) return false
+      if (target?.id === connection.source) return false
       return !hasCycle(target)
     },
     [getNodes, getEdges]
