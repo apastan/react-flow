@@ -17,11 +17,21 @@ import {
 } from '@xyflow/react';
 
 import {Button} from '@/components/ui/button.tsx';
-import {Plus} from 'lucide-react';
+import {Plus, Trash} from 'lucide-react';
 import {QuestionNode} from './QuestionNode.tsx';
 import {ChoiceNode} from './ChoiceNode.tsx';
 import type {AppNodes, ChoiceNodeData, QuestionNodeData, QuestionNodeType} from "../types";
 import {getId, getLayoutedElements, nodeWidth} from "../lib";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTrigger,
+    DialogTitle,
+    DialogFooter,
+    DialogClose
+} from "@/components/ui/dialog.tsx";
 
 const nodeTypes = {
     question: QuestionNode,
@@ -34,6 +44,7 @@ export function DiagramBuilder() {
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const isEmpty = nodes.length === 0;
     console.log("Render DiagramBuilder, nodes:", nodes)
     console.log("Render DiagramBuilder, edges:", edges)
 
@@ -123,6 +134,11 @@ export function DiagramBuilder() {
         });
     }
 
+    const clear = () => {
+        setNodes([])
+        setEdges([])
+    }
+
     const addQuestionNode = () => {
         const newId = getId();
 
@@ -196,42 +212,68 @@ export function DiagramBuilder() {
     );
 
     return (
-        <div className="h-screen w-full flex flex-col">
-            <div className="p-4 flex gap-2 bg-gray-100 border-b">
-                <Button onClick={addQuestionNode} variant="default">
-                    <Plus className="w-4 h-4" /> Добавить вопрос
-                </Button>
-                <Button onClick={addChoiceNode} variant="outline">
-                    <Plus className="w-4 h-4" /> Добавить вариант ответа
-                </Button>
-            </div>
-            <div className="flex-1">
-                <ReactFlowProvider>
-                    <ReactFlow
-                        nodes={nodes}
-                        edges={edges}
-                        onNodesChange={onNodesChange}
-                        onEdgesChange={onEdgesChange}
-                        onConnect={onConnect}
-                        nodeTypes={nodeTypes}
-                        fitView
-                        connectionLineType={ConnectionLineType.SimpleBezier} // TODO
-                        style={{ backgroundColor: '#F7F9FB' }}
-                    >
-                        <Panel position="top-right">
-                            <Button variant={'outline'} onClick={() => onLayout('TB')}>
-                                Вертикально
+        <>
+            <div className="h-screen w-full flex flex-col">
+                <div className="p-4 flex gap-2 bg-gray-100 border-b">
+                    <Button onClick={addQuestionNode} variant="default">
+                        <Plus className="w-4 h-4" /> Добавить вопрос
+                    </Button>
+                    <Button onClick={addChoiceNode} variant="outline">
+                        <Plus className="w-4 h-4" /> Добавить вариант ответа
+                    </Button>
+
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="destructive" disabled={isEmpty}>
+                                <Trash className="w-4 h-4" /> Очистить холст
                             </Button>
-                            <Button variant={'outline'}  onClick={() => onLayout('LR')}>
-                                Горизонтально
-                            </Button>
-                        </Panel>
-                        <MiniMap />
-                        <Controls />
-                        <Background gap={12} />
-                    </ReactFlow>
-                </ReactFlowProvider>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Вы точно уверены?</DialogTitle>
+                                <DialogDescription>
+                                    Это действие приведет к полному удалению всех элементов на холсте и его нельзя отменить.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button type="button" variant={"destructive"} onClick={clear}>Удалить</Button>
+                                </DialogClose>
+                                        <DialogClose asChild>
+                                    <Button type="button">Отмена</Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+                <div className="flex-1">
+                    <ReactFlowProvider>
+                        <ReactFlow
+                            nodes={nodes}
+                            edges={edges}
+                            onNodesChange={onNodesChange}
+                            onEdgesChange={onEdgesChange}
+                            onConnect={onConnect}
+                            nodeTypes={nodeTypes}
+                            fitView
+                            connectionLineType={ConnectionLineType.SimpleBezier} // TODO
+                            style={{ backgroundColor: '#F7F9FB' }}
+                        >
+                            <Panel position="top-right">
+                                <Button variant={'outline'} onClick={() => onLayout('TB')}>
+                                    Вертикально
+                                </Button>
+                                <Button variant={'outline'}  onClick={() => onLayout('LR')}>
+                                    Горизонтально
+                                </Button>
+                            </Panel>
+                            <MiniMap />
+                            <Controls />
+                            <Background gap={12} />
+                        </ReactFlow>
+                    </ReactFlowProvider>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
