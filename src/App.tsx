@@ -1,7 +1,12 @@
 import { DiagramBuilder } from '@/features/telegram-bot-builder/ui'
+import { ReactFlowProvider } from '@xyflow/react'
 
 function App() {
-  return <DiagramBuilder />
+  return (
+    <ReactFlowProvider>
+      <DiagramBuilder />
+    </ReactFlowProvider>
+  )
 }
 
 export default App

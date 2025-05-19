@@ -16,4 +16,5 @@ export type ChoiceNodeData = {
 export type QuestionNodeType = Node<QuestionNodeData, 'question'>
 export type ChoiceNodeType = Node<ChoiceNodeData, 'choice'>
 
-export type AppNodes = Node<QuestionNodeData | ChoiceNodeData>[]
+export type AppNode = Node<QuestionNodeData | ChoiceNodeData>
+export type AppNodes = AppNode[]

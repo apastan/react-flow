@@ -7,13 +7,15 @@ import {
   ConnectionLineType,
   Controls,
   type Edge,
+  type EdgeBase,
+  getOutgoers,
   MiniMap,
   type Node,
   Panel,
   ReactFlow,
-  ReactFlowProvider,
   useEdgesState,
   useNodesState,
+  useReactFlow,
 } from '@xyflow/react'
 
 import { Button } from '@/components/ui/button.tsx'
@@ -21,7 +23,12 @@ import { Plus, Trash } from 'lucide-react'
 import { QuestionNode } from './QuestionNode.tsx'
 import { ChoiceNode } from './ChoiceNode.tsx'
 import { ButtonEdge } from './ButtonEdge.tsx'
-import type { AppNodes, ChoiceNodeData, QuestionNodeData } from '../types'
+import type {
+  AppNode,
+  AppNodes,
+  ChoiceNodeData,
+  QuestionNodeData,
+} from '../types'
 import { getId, getLayoutedElements, nodeWidth } from '../lib'
 import {
   Dialog,
@@ -54,6 +61,8 @@ export function DiagramBuilder() {
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const { getNodes, getEdges } = useReactFlow()
+
   const isEmpty = nodes.length === 0
   console.log('Render DiagramBuilder:', nodes, edges)
 
@@ -73,6 +82,11 @@ export function DiagramBuilder() {
 
   const onConnect = useCallback(
     (connection: Connection) => {
+      // we are using getNodes and getEdges helpers here
+      // to make sure we create isValidConnection function only once
+      const nodes = getNodes()
+      const edges = getEdges()
+
       const source = connection.source
       const target = connection.target
 
@@ -143,7 +157,31 @@ export function DiagramBuilder() {
         )
       )
     },
-    [nodes, edges]
+    [getNodes, getEdges]
+  )
+
+  const isValidConnection = useCallback(
+    (connection: EdgeBase | Connection) => {
+      // we are using getNodes and getEdges helpers here
+      // to make sure we create isValidConnection function only once
+      const nodes = getNodes()
+      const edges = getEdges()
+      const target = nodes.find((node) => node.id === connection.target)
+      const hasCycle = (node: AppNode, visited = new Set()) => {
+        if (visited.has(node.id)) return false
+
+        visited.add(node.id)
+
+        for (const outgoer of getOutgoers(node, nodes, edges)) {
+          if (outgoer.id === connection.source) return true
+          if (hasCycle(outgoer, visited)) return true
+        }
+      }
+
+      if (target.id === connection.source) return false
+      return !hasCycle(target)
+    },
+    [getNodes, getEdges]
   )
 
   const addQuestionNode = () => {
@@ -247,13 +285,14 @@ export function DiagramBuilder() {
           </Dialog>
         </div>
         <div className="flex-1">
-          <ReactFlowProvider>
+          <>
             <ReactFlow
               nodes={nodes}
               edges={edges}
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}
+              isValidConnection={isValidConnection}
               nodeTypes={nodeTypes}
               edgeTypes={edgeTypes}
               fitView
@@ -272,7 +311,7 @@ export function DiagramBuilder() {
               <Controls />
               <Background gap={12} />
             </ReactFlow>
-          </ReactFlowProvider>
+          </>
 
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogContent>
