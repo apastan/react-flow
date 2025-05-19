@@ -1,4 +1,4 @@
-import type { Node } from '@xyflow/react'
+import type { Edge, Node } from '@xyflow/react'
 
 export type QuestionNodeData = {
   isStartNode: boolean
@@ -7,6 +7,8 @@ export type QuestionNodeData = {
   onlyChoicesDefault: boolean
   removeNode: (id: string, isStartNode?: boolean) => void
   updateStartNode: (id: string) => void
+  nodes: AppNodes
+  edges: Edge[]
 }
 
 export type ChoiceNodeData = {

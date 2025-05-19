@@ -209,6 +209,8 @@ export function DiagramBuilder() {
           responseTextDefault: '',
           onlyChoicesDefault: true,
           removeNode,
+          nodes,
+          edges,
         },
       }
 

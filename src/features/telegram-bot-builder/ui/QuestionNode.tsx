@@ -1,18 +1,12 @@
 import { memo, useRef, useState } from 'react'
-import {
-  Handle,
-  type NodeProps,
-  Position,
-  useEdges,
-  useNodes,
-} from '@xyflow/react'
+import { Handle, type NodeProps, Position } from '@xyflow/react'
 import { Button } from '@/components/ui/button.tsx'
 import {
-  MoreVertical,
-  MessageCircleReply,
   Crown,
-  Trash,
   Info,
+  MessageCircleReply,
+  MoreVertical,
+  Trash,
 } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea.tsx'
 import { Checkbox } from '@/components/ui/checkbox.tsx'
@@ -53,6 +47,8 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
     responseTextDefault,
     onlyChoicesDefault,
     removeNode,
+    nodes,
+    edges,
   } = data
   console.log(`Render QuestionNode ${id}`)
 
@@ -67,8 +63,6 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
   )
   const onlyChoicesElementRef = useRef<HTMLButtonElement>(null)
 
-  const nodes = useNodes()
-  const edges = useEdges()
   const connections = edges.filter((edge) => edge.source === id)
   const hasConnectionWithChoiceNode = connections.some(
     (edge) => nodes.find((node) => node.id === edge.target)?.type === 'choice'
