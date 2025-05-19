@@ -5,15 +5,15 @@ export type QuestionNodeData = {
   questionDefault: string
   responseTextDefault: string
   onlyChoicesDefault: boolean
-  removeNode: (id: string) => void
-  updateStartNodeId: (id: string) => void
+  removeNode: (id: string, isStartNode?: boolean) => void
+  updateStartNode: (id: string) => void
 }
 
 export type ChoiceNodeData = {
   choiceTextDefault: string
   responseTextDefault: string
   requestContactDefault: boolean
-  removeNode: (id: string) => void
+  removeNode: (id: string, isStartNode?: boolean) => void
 }
 
 export type QuestionNodeType = Node<QuestionNodeData, 'question'>

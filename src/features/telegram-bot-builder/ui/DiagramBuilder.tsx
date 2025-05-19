@@ -21,12 +21,7 @@ import { Plus, Trash } from 'lucide-react'
 import { QuestionNode } from './QuestionNode.tsx'
 import { ChoiceNode } from './ChoiceNode.tsx'
 import { ButtonEdge } from './ButtonEdge.tsx'
-import type {
-  AppNodes,
-  ChoiceNodeData,
-  QuestionNodeData,
-  QuestionNodeType,
-} from '../types'
+import type { AppNodes, ChoiceNodeData, QuestionNodeData } from '../types'
 import { getId, getLayoutedElements, nodeWidth } from '../lib'
 import {
   Dialog,
@@ -148,41 +143,54 @@ export function DiagramBuilder() {
     [nodes, edges]
   )
 
-  const updateStartNodeId = (id: string) => {
-    setNodes((nodes) =>
-      nodes.map((node) => {
-        if (node.type === 'question' && 'isStartNode' in node.data) {
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              isStartNode: node.id === id,
-            },
+  // TODO - временно обернул в useCallback
+  const updateStartNode = useCallback(
+    (id: string) => {
+      setNodes((nodes) =>
+        nodes.map((node) => {
+          if (node.type === 'question' && 'isStartNode' in node.data) {
+            const shouldBeStart = node.id === id
+            const isCurrentlyStart = node.data.isStartNode === true
+
+            if (shouldBeStart !== isCurrentlyStart) {
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  isStartNode: shouldBeStart,
+                },
+              }
+            }
           }
+
+          return node
+        })
+      )
+    },
+    [setNodes]
+  )
+
+  // TODO - временно обернул в useCallback
+  const removeNode = useCallback(
+    (id: string, isStartNode?: boolean) => {
+      setNodes((nodes) => {
+        if (isStartNode) {
+          showDialog({
+            title: 'Будьте внимательны',
+            description:
+              'Вы удалили стартовый вопрос - обязательно выберите один из вопроса в качестве в качестве стартового.',
+          })
         }
 
-        return node
+        return nodes.filter((node) => node.id !== id)
       })
-    )
-  }
 
-  const removeNode = (id: string) => {
-    setNodes((nodes) => {
-      const startNode = nodes.find(
-        (node) => node.id === id && node.type === 'question'
+      setEdges((edges) =>
+        edges.filter((edge) => edge.source !== id && edge.target !== id)
       )
-      // TODO - refactor - get rid of assertion
-      if ((startNode as QuestionNodeType | undefined)?.data?.isStartNode) {
-        showDialog({
-          title: 'Будьте внимательны',
-          description:
-            'Вы удалили стартовый вопрос - обязательно выберите один из вопроса в качестве в качестве стартового.',
-        })
-      }
-      // TODO - refactor - O(n)
-      return nodes.filter((node) => node.id !== id)
-    })
-  }
+    },
+    [setNodes, setEdges]
+  )
 
   const addQuestionNode = () => {
     const newId = getId()
@@ -196,11 +204,11 @@ export function DiagramBuilder() {
         position: { x: 100, y: 100 },
         data: {
           isStartNode: !hasQuestionNode,
-          updateStartNodeId,
+          updateStartNode,
           questionDefault: '',
           responseTextDefault: '',
           onlyChoicesDefault: true,
-          removeNode: removeNode,
+          removeNode,
         },
       }
 
@@ -227,7 +235,7 @@ export function DiagramBuilder() {
           choiceTextDefault: '',
           responseTextDefault: '',
           requestContactDefault: false,
-          removeNode: removeNode,
+          removeNode,
         },
       }
 

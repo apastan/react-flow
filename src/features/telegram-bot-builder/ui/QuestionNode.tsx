@@ -7,7 +7,13 @@ import {
   useNodes,
 } from '@xyflow/react'
 import { Button } from '@/components/ui/button.tsx'
-import { MoreVertical, MessageCircleReply, Crown, Trash } from 'lucide-react'
+import {
+  MoreVertical,
+  MessageCircleReply,
+  Crown,
+  Trash,
+  Info,
+} from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea.tsx'
 import { Checkbox } from '@/components/ui/checkbox.tsx'
 import {
@@ -18,6 +24,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx'
 import type { QuestionNodeType } from '../types'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover.tsx'
 
 const handleStyles = {
   background: 'white',
@@ -37,7 +48,7 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
   } = props
   const {
     isStartNode,
-    updateStartNodeId,
+    updateStartNode,
     questionDefault,
     responseTextDefault,
     onlyChoicesDefault,
@@ -108,12 +119,12 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
                   {showResponse ? 'Удалить' : 'Добавить'} Response
                 </DropdownMenuItem>
                 {!isStartNode && (
-                  <DropdownMenuItem onClick={() => updateStartNodeId(id)}>
+                  <DropdownMenuItem onClick={() => updateStartNode(id)}>
                     <Crown className="w-4 h-4" />
                     Сделать стартовым
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={() => removeNode(id)}>
+                <DropdownMenuItem onClick={() => removeNode(id, isStartNode)}>
                   <Trash className="w-4 h-4" />
                   Удалить вопрос
                 </DropdownMenuItem>
@@ -150,6 +161,12 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
           <label htmlFor={`only_choices_${id}`} className="text-sm">
             Только выбор из вариантов
           </label>
+          <Popover>
+            <PopoverTrigger>
+              <Info className="size-4" />
+            </PopoverTrigger>
+            <PopoverContent>Place content for the popover here.</PopoverContent>
+          </Popover>
         </div>
       )}
       <Handle type="source" position={sourcePosition} style={handleStyles} />
