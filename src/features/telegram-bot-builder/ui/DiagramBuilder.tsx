@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import '@xyflow/react/dist/style.css';
 import {
     addEdge,
@@ -24,14 +24,19 @@ import type {AppNodes, ChoiceNodeData, QuestionNodeData, QuestionNodeType} from 
 import {getId, getLayoutedElements, nodeWidth} from "../lib";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
-    DialogHeader,
-    DialogTrigger,
-    DialogTitle,
     DialogFooter,
-    DialogClose
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
 } from "@/components/ui/dialog.tsx";
+
+type DialogContent = {
+    title: string
+    description: string
+}
 
 const nodeTypes = {
     question: QuestionNode,
@@ -48,6 +53,19 @@ export function DiagramBuilder() {
     console.log("Render DiagramBuilder, nodes:", nodes)
     console.log("Render DiagramBuilder, edges:", edges)
 
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+    const dialogContentRef = useRef<DialogContent>(null)
+    if (!dialogOpen && dialogContentRef.current) {
+        // чтобы избежать мерцания удаляемого текста, поскольку закрытие происходит с анимацией 150 ms
+        setTimeout(() => {
+            dialogContentRef.current = null
+        }, 150)
+    }
+
+    const showDialog = (content: DialogContent) => {
+        setDialogOpen(true)
+        dialogContentRef.current = content
+    }
 
     const onConnect = useCallback((connection: Connection) => {
         const source = connection.source;
@@ -62,7 +80,10 @@ export function DiagramBuilder() {
 
         // Нельзя соединять ответ → ответ
         if (sourceNode.type === 'choice' && targetNode.type === 'choice') {
-            alert('Нельзя соединить Choice с Choice');
+            showDialog({
+                title: "Действие недопустимо!",
+                description: "Нельзя соединять варианты ответа друг с другом. Варианты ответов допустимо соединять только с вопросами."
+            })
             return;
         }
 
@@ -71,13 +92,16 @@ export function DiagramBuilder() {
             sourceNode.type === 'question' &&
             targetNode.type === 'question'
         ) {
-            const hasChoiceConnection = edges.some(
+            const notAllowed = edges.some(
                 (e) =>
                     e.source === source &&
                     nodes.find((n) => n.id === e.target)?.type === 'choice'
             );
-            if (hasChoiceConnection) {
-                alert('Нельзя соединить вопрос с другим вопросом, если уже есть связь с ответом');
+            if (notAllowed) {
+                showDialog({
+                    title: "Действие недопустимо!",
+                    description: "Нельзя соединить вопрос с другим вопросом, если уже есть связь с ответом."
+                })
                 return;
             }
         }
@@ -93,7 +117,10 @@ export function DiagramBuilder() {
                     nodes.find((n) => n.id === e.target)?.type === 'question'
             );
             if (hasQuestionConnection) {
-                alert('Нельзя соединить вопрос с ответом, если уже есть связь с другим вопросом');
+                showDialog({
+                    title: "Действие недопустимо",
+                    description: "Нельзя соединить вопрос с ответом, если уже есть связь с другим вопросом."
+                })
                 return;
             }
         }
@@ -127,7 +154,10 @@ export function DiagramBuilder() {
             const startNode = nodes.find((node) => node.id === id && node.type === 'question');
             // TODO - refactor - get rid of assertion
             if ((startNode as QuestionNodeType | undefined)?.data?.isStartNode) {
-                alert('Вы удаляете стартовый вопрос - обязательно выберите другой вопрос в качестве стартового')
+                showDialog({
+                    title: "Будьте внимательны",
+                    description: "Вы удалили стартовый вопрос - обязательно выберите один из вопроса в качестве в качестве стартового."
+                })
             }
             // TODO - refactor - O(n)
             return nodes.filter(node => node.id !== id)
@@ -272,6 +302,22 @@ export function DiagramBuilder() {
                             <Background gap={12} />
                         </ReactFlow>
                     </ReactFlowProvider>
+
+                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>{dialogContentRef?.current?.title}</DialogTitle>
+                                <DialogDescription>
+                                    {dialogContentRef?.current?.description}
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button type="button">Понятно</Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
         </>
