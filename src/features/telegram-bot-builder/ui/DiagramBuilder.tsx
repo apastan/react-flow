@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button.tsx'
 import { Plus, Trash } from 'lucide-react'
 import { QuestionNode } from './QuestionNode.tsx'
 import { ChoiceNode } from './ChoiceNode.tsx'
+import { ButtonEdge } from './ButtonEdge.tsx'
 import type {
   AppNodes,
   ChoiceNodeData,
@@ -46,6 +47,10 @@ type DialogContent = {
 const nodeTypes = {
   question: QuestionNode,
   choice: ChoiceNode,
+}
+
+const edgeTypes = {
+  button: ButtonEdge,
 }
 
 export function DiagramBuilder() {
@@ -134,6 +139,7 @@ export function DiagramBuilder() {
             // markerEnd: {
             //     type: MarkerType.ArrowClosed,
             // },
+            type: 'button',
           },
           edges
         )
@@ -292,6 +298,7 @@ export function DiagramBuilder() {
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}
               nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
               fitView
               connectionLineType={ConnectionLineType.SimpleBezier} // TODO
               style={{ backgroundColor: '#F7F9FB' }}
