@@ -55,7 +55,7 @@ export function DiagramBuilder() {
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-  const { getNodes, getEdges } = useReactFlow()
+  const { getNodes, getEdges, fitView } = useReactFlow()
 
   const isEmpty = nodes.length === 0
   console.log('Render DiagramBuilder:', nodes, edges)
@@ -240,9 +240,10 @@ export function DiagramBuilder() {
       edges,
       direction
     )
-
+    // fitView({nodes: layoutedNodes})
     setNodes([...layoutedNodes])
     setEdges([...layoutedEdges])
+    setTimeout(() => fitView({includeHiddenNodes: true}), 0)
   }
 
   return (
@@ -297,6 +298,7 @@ export function DiagramBuilder() {
               fitView
               connectionLineType={ConnectionLineType.SimpleBezier} // TODO
               style={{ backgroundColor: '#F7F9FB' }}
+              minZoom={0.2}
             >
               <Panel position="top-right">
                 <Button variant={'outline'} onClick={() => onLayout('TB')}>
