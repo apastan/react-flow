@@ -180,10 +180,18 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
             Только выбор из вариантов
           </label>
           <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger
+              className={
+                'hover:outline-3 focus:outline-3 rounded-full outline-gray-200 hover:cursor-pointer'
+              }
+            >
               <Info className="size-4" />
             </PopoverTrigger>
-            <PopoverContent>Place content for the popover here.</PopoverContent>
+            <PopoverContent className={'text-sm'}>
+              Если данный чекбокс выбран, то пользователь не сможет дать ответ в
+              свободной форме, а сможет только выбрать один из предложенных
+              вариантов ответа.
+            </PopoverContent>
           </Popover>
         </div>
       )}
