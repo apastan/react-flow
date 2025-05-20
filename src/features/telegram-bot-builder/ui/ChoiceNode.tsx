@@ -16,9 +16,9 @@ import { useDeleteNodeEdges } from '@/features/telegram-bot-builder/hooks'
 
 const handleStyles = {
   background: 'white',
-  height: '10px',
-  width: '10px',
-  border: '2px solid #99a1af',
+  height: '25px',
+  width: '25px',
+  border: '1px solid var(--xy-edge-stroke-default)',
 }
 
 export const ChoiceNode = memo((props: NodeProps<ChoiceNodeType>) => {

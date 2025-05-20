@@ -47,7 +47,7 @@ export function ButtonEdge({
         >
           <Button
             className={
-              'size-9 border border-s border-solid text-[var(--xy-edge-node-color-default)] bg-neutral-100 border-[var(--xy-edge-stroke-default)] cursor-pointer rounded-full text-base hover:bg-neutral-200'
+              'size-6 px-2 border border-s border-solid text-[var(--xy-edge-node-color-default)] bg-neutral-100 border-[var(--xy-edge-stroke-default)] cursor-pointer rounded-full text-base hover:bg-neutral-200'
             }
             onClick={onEdgeClick}
             aria-label={'Удалить связь'}
