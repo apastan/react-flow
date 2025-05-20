@@ -113,14 +113,14 @@ export const QuestionNode = memo((props: NodeProps<QuestionNodeType>) => {
       <Handle type="target" position={targetPosition} style={handleStyles} />
       <div className="flex justify-between items-center mb-2">
         <div className={'flex'}>
-          <span className="font-semibold text-sm mr-1">
-            {isStartNode ? 'Стартовый вопрос' : 'Вопрос'}
-          </span>
-          <span className={'flex justify-center items-center'}>
+          <span className={'flex justify-center items-center mr-1'}>
             {isStartNode && (
               // <Network className="w-4 h-4 text-amber-600"/>
               <Crown className="w-4 h-4 text-amber-600" />
             )}
+          </span>
+          <span className="font-semibold text-sm mr-1">
+            {isStartNode ? 'Стартовый вопрос' : 'Вопрос'}
           </span>
         </div>
         <div className="flex items-center gap-2">
