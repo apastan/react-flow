@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from 'react'
+import { useCallback, useRef, useState } from 'react'
 import '@xyflow/react/dist/style.css'
 import {
   addEdge,
@@ -17,13 +17,13 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 
-import {Button} from '@/components/ui/button.tsx'
-import {Plus, Trash} from 'lucide-react'
-import {QuestionNode} from './QuestionNode.tsx'
-import {ChoiceNode} from './ChoiceNode.tsx'
-import {ButtonEdge} from './ButtonEdge.tsx'
-import type {AppNodes, ChoiceNodeData, QuestionNodeData,} from '../types'
-import {getId, getLayoutedElements, nodeWidth} from '../lib'
+import { Button } from '@/components/ui/button.tsx'
+import { Plus, Trash } from 'lucide-react'
+import { QuestionNode } from './QuestionNode.tsx'
+import { ChoiceNode } from './ChoiceNode.tsx'
+import { ButtonEdge } from './ButtonEdge.tsx'
+import type { AppNodes, ChoiceNodeData, QuestionNodeData } from '../types'
+import { getId, getLayoutedElements, nodeWidth } from '../lib'
 import {
   Dialog,
   DialogClose,
@@ -243,7 +243,7 @@ export function DiagramBuilder() {
     // fitView({nodes: layoutedNodes})
     setNodes([...layoutedNodes])
     setEdges([...layoutedEdges])
-    setTimeout(() => fitView({includeHiddenNodes: true}), 0)
+    setTimeout(() => fitView({ includeHiddenNodes: true }), 0)
   }
 
   return (

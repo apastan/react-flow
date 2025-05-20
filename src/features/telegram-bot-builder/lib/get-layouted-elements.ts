@@ -2,7 +2,6 @@ import dagre from '@dagrejs/dagre'
 import { type Edge, Position, type XYPosition } from '@xyflow/react'
 import type { AppNodes } from '@/features/telegram-bot-builder/types'
 
-
 export const nodeWidth = 300
 export const nodeHeight = 230
 
