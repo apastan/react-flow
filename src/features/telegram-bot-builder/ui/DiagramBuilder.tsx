@@ -8,6 +8,7 @@ import {
   Controls,
   type Edge,
   getOutgoers,
+  MarkerType,
   MiniMap,
   type Node,
   Panel,
@@ -159,9 +160,11 @@ export function DiagramBuilder() {
         addEdge(
           {
             ...connection,
-            // markerEnd: {
-            //     type: MarkerType.ArrowClosed,
-            // },
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              height: 15,
+              width: 15,
+            },
             type: 'button',
             data: {
               setEdges,
