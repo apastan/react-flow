@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
-import { Info, Plus, Trash, X } from 'lucide-react'
+import { Info, MessageSquareMore, Plus, Trash, X } from 'lucide-react'
 import { AddButton } from '@/features/tg-bot-builder-form/ui/add-button.tsx'
 import { Label } from '@/components/ui/label.tsx'
 import { useId } from 'react'
@@ -60,7 +60,7 @@ export const Question = ({
                 />
                 <Button
                   size={'icon'}
-                  className={'rounded-full shrink-0 '}
+                  className={'rounded-full shrink-0'}
                   variant="ghost"
                   onClick={() => removeChoice(question.name, choice.id)}
                 >
@@ -69,14 +69,26 @@ export const Question = ({
               </div>
             )
           })}
-          <div className={cn([question.choices.length > 0 ? 'pr-10' : ''])}>
+          <div
+            className={cn(['flex justify-between items-center mb-2 space-x-1'])}
+          >
             <AddButton
-              className={'py-2 rounded-md'}
+              className={'md:py-2 rounded-md py-2.5'}
               onClick={() => addChoice(question.name)}
             >
               <Plus className="w-4 h-4" />
               Добавить вариант ответа
             </AddButton>
+
+            {question.choices.length > 0 && (
+              <AddButton
+                className={
+                  'md:py-2 md:size-9 rounded-md py-2.5 size-9 shrink-0 h-10'
+                }
+              >
+                <MessageSquareMore className="w-4 h-4" />
+              </AddButton>
+            )}
           </div>
         </div>
 
