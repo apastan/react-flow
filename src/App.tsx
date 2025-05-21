@@ -1,14 +1,9 @@
-import { DiagramBuilder } from '@/features/telegram-bot-builder/ui'
-import { ReactFlowProvider } from '@xyflow/react'
+import { router } from '@/app/router.tsx'
+import { RouterProvider } from 'react-router-dom'
 
 function App() {
-  return (
-    <ReactFlowProvider>
-      <DiagramBuilder />
-    </ReactFlowProvider>
-  )
+  return <RouterProvider router={router} />
 }
-
 export default App
 
 // type TgBotChoice = {
