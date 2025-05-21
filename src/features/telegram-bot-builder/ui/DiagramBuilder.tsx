@@ -50,7 +50,27 @@ const edgeTypes = {
 }
 
 export function DiagramBuilder() {
-  const initialNodes: AppNodes = []
+  const initialNodes: AppNodes = [
+    {
+      id: '4HQ',
+      type: 'question',
+      position: {
+        x: 300,
+        y: 0,
+      },
+      data: {
+        isStartNode: true,
+        questionDefault: '',
+        responseTextDefault: '',
+        onlyChoicesDefault: true,
+      },
+      measured: {
+        width: 288,
+        height: 130,
+      },
+      selected: true,
+    },
+  ]
   const initialEdges: Edge[] = []
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
