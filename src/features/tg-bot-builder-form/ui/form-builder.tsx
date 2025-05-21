@@ -20,8 +20,8 @@ export type QuestionType = {
 
 export const FormBuilder = () => {
   const isLoading = false
-  const initialQuestions = []
-  const [questions, setQuestions] = useState<QuestionType[]>([])
+  const initialQuestions: QuestionType[] = []
+  const [questions, setQuestions] = useState<QuestionType[]>(initialQuestions)
   const hasQuestions = questions.length > 0
   console.log(questions)
 
@@ -60,18 +60,22 @@ export const FormBuilder = () => {
 
   const removeChoice = (questionName: string, choiceId: string) => {
     setQuestions((state) => {
-      return state.map((q) =>
-        q.name === questionName
+      return state.map((q) => {
+        if (q.name === questionName && q.choices.length === 1) {
+          toggleOnlyChoices(questionName, false)
+        }
+
+        return q.name === questionName
           ? { ...q, choices: q.choices.filter((c) => c.id !== choiceId) }
           : q
-      )
+      })
     })
   }
 
-  const toggleOnlyChoices = (questionName: string) => {
+  const toggleOnlyChoices = (questionName: string, onlyChoices: boolean) => {
     setQuestions((state) =>
       state.map((q) =>
-        q.name === questionName ? { ...q, only_choices: !q.only_choices } : q
+        q.name === questionName ? { ...q, only_choices: onlyChoices } : q
       )
     )
   }

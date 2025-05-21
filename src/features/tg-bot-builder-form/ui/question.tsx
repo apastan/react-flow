@@ -6,11 +6,6 @@ import { AddButton } from '@/features/tg-bot-builder-form/ui/add-button.tsx'
 import { Label } from '@/components/ui/label.tsx'
 import { useId } from 'react'
 import type { QuestionType } from '@/features/tg-bot-builder-form/ui/form-builder.tsx'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover.tsx'
 import { cn } from '@/lib/utils.ts'
 import {
   Tooltip,
@@ -34,7 +29,7 @@ type QuestionProps = {
   removeQuestion: (name: string) => void
   question: QuestionType
   removeChoice: (questionId: string, choiceId: string) => void
-  toggleOnlyChoices: (name: string) => void
+  toggleOnlyChoices: (name: string, onlyChoices: boolean) => void
 }
 
 export const Question = ({
@@ -56,27 +51,29 @@ export const Question = ({
           />
 
           <Dialog>
-            <DialogTrigger>
+            <>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      className={'rounded-full shrink-0'}
-                      variant="ghost"
-                      aria-label="Удалить вопрос"
-                    >
-                      <Trash className="w-4 h-4" />
-                    </Button>
+                    <DialogTrigger asChild>
+                      <Button
+                        className={'rounded-full shrink-0'}
+                        variant="ghost"
+                        aria-label="Удалить вопрос"
+                      >
+                        <Trash className="w-4 h-4" />
+                      </Button>
+                    </DialogTrigger>
                   </TooltipTrigger>
                   <TooltipContent>Удалить вопрос</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-            </DialogTrigger>
+            </>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Вы точно уверены?</DialogTitle>
                 <DialogDescription>
-                  Это действие приведет к удалению вопроса, а также все данных,
+                  Это действие приведет к удалению вопроса, а также всех данных,
                   связанных с этим вопросом.
                 </DialogDescription>
               </DialogHeader>
@@ -134,7 +131,9 @@ export const Question = ({
                 size={'icon'}
                 className={'rounded-full shrink-0'}
                 variant="ghost"
-                onClick={() => toggleOnlyChoices(question.name)}
+                onClick={() =>
+                  toggleOnlyChoices(question.name, !question.only_choices)
+                }
                 aria-label="Удалить ответ свободной форме"
               >
                 <X className="w-4 h-4" />
@@ -165,12 +164,14 @@ export const Question = ({
                         'md:py-2 md:size-9 rounded-md py-2.5 size-9 shrink-0 h-10'
                       }
                       aria-label="Разрешить ответ в свободной форме"
-                      onClick={() => toggleOnlyChoices(question.name)}
+                      onClick={() =>
+                        toggleOnlyChoices(question.name, !question.only_choices)
+                      }
                     >
                       <MessageSquareMore className="w-4 h-4" />
                     </AddButton>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent side={'bottom'}>
                     Разрешить ответ в свободной форме
                   </TooltipContent>
                 </Tooltip>
@@ -184,16 +185,18 @@ export const Question = ({
             AI Комментарий
           </Label>
 
-          <Popover>
-            <PopoverTrigger className={'cursor-pointer'}>
-              <Info className="size-4" />
-            </PopoverTrigger>
-            <PopoverContent className={'text-sm'}>
-              Это текст для AI, на основании которого AI принимается решение,
-              соответствует ли ответ кандидата на данный вопрос требованиям
-              вакансии
-            </PopoverContent>
-          </Popover>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="size-4" />
+              </TooltipTrigger>
+              <TooltipContent className={'w-[300px]'}>
+                Это текст для AI, на основании которого AI принимается решение,
+                соответствует ли ответ кандидата на данный вопрос требованиям
+                вакансии
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <Textarea
           id={id}
