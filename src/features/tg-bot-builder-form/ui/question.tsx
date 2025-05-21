@@ -12,6 +12,12 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover.tsx'
 import { cn } from '@/lib/utils.ts'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip.tsx'
 
 type QuestionProps = {
   addChoice: (id: string) => void
@@ -37,13 +43,21 @@ export const Question = ({
             className="resize-none py-2 min-h-9"
           />
 
-          <Button
-            className={'rounded-full shrink-0'}
-            variant="ghost"
-            onClick={() => removeQuestion(question.name)}
-          >
-            <Trash className="w-4 h-4" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className={'rounded-full shrink-0'}
+                  variant="ghost"
+                  onClick={() => removeQuestion(question.name)}
+                  aria-label="Удалить вопрос"
+                >
+                  <Trash className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Удалить вопрос</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         <div className={'mt-4 mb-6 md:ml-[30%] ml-[20%]'}>
@@ -63,6 +77,7 @@ export const Question = ({
                   className={'rounded-full shrink-0'}
                   variant="ghost"
                   onClick={() => removeChoice(question.name, choice.id)}
+                  aria-label="Удалить вариант ответа"
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -81,13 +96,23 @@ export const Question = ({
             </AddButton>
 
             {question.choices.length > 0 && (
-              <AddButton
-                className={
-                  'md:py-2 md:size-9 rounded-md py-2.5 size-9 shrink-0 h-10'
-                }
-              >
-                <MessageSquareMore className="w-4 h-4" />
-              </AddButton>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <AddButton
+                      className={
+                        'md:py-2 md:size-9 rounded-md py-2.5 size-9 shrink-0 h-10'
+                      }
+                      aria-label="Разрешить ответ в свободной форме"
+                    >
+                      <MessageSquareMore className="w-4 h-4" />
+                    </AddButton>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Разрешить ответ в свободной форме
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </div>
