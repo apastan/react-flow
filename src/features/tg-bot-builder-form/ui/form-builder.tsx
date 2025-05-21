@@ -61,12 +61,16 @@ export const FormBuilder = () => {
   const removeChoice = (questionName: string, choiceId: string) => {
     setQuestions((state) => {
       return state.map((q) => {
-        if (q.name === questionName && q.choices.length === 1) {
-          toggleOnlyChoices(questionName, false)
-        }
+        // if (q.name === questionName && q.choices.length === 1) {
+        //   toggleOnlyChoices(questionName, false)
+        // }
 
         return q.name === questionName
-          ? { ...q, choices: q.choices.filter((c) => c.id !== choiceId) }
+          ? {
+              ...q,
+              choices: q.choices.filter((c) => c.id !== choiceId),
+              only_choices: q.choices.length === 1 ? false : q.only_choices,
+            }
           : q
       })
     })
