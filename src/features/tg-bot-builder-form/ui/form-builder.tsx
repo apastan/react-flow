@@ -53,19 +53,27 @@ export const FormBuilder = () => {
   }
 
   const removeQuestion = (name: string) => {
-    setQuestions((q) => {
-      return q.filter((q) => q.name !== name)
+    setQuestions((state) => {
+      return state.filter((q) => q.name !== name)
     })
   }
 
   const removeChoice = (questionName: string, choiceId: string) => {
-    setQuestions((q) => {
-      return q.map((q) =>
+    setQuestions((state) => {
+      return state.map((q) =>
         q.name === questionName
           ? { ...q, choices: q.choices.filter((c) => c.id !== choiceId) }
           : q
       )
     })
+  }
+
+  const toggleOnlyChoices = (questionName: string) => {
+    setQuestions((state) =>
+      state.map((q) =>
+        q.name === questionName ? { ...q, only_choices: !q.only_choices } : q
+      )
+    )
   }
 
   if (isLoading) return <div>Loading...</div>
@@ -83,6 +91,7 @@ export const FormBuilder = () => {
                   question={question}
                   removeChoice={removeChoice}
                   removeQuestion={removeQuestion}
+                  toggleOnlyChoices={toggleOnlyChoices}
                 />
               )
             })}

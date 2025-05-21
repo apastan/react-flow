@@ -24,6 +24,7 @@ type QuestionProps = {
   removeQuestion: (name: string) => void
   question: QuestionType
   removeChoice: (questionId: string, choiceId: string) => void
+  toggleOnlyChoices: (name: string) => void
 }
 
 export const Question = ({
@@ -31,6 +32,7 @@ export const Question = ({
   question,
   removeQuestion,
   removeChoice,
+  toggleOnlyChoices,
 }: QuestionProps) => {
   const id = useId()
 
@@ -84,8 +86,31 @@ export const Question = ({
               </div>
             )
           })}
+
+          {question.only_choices && (
+            <div className={'flex justify-between items-center mb-2 space-x-1'}>
+              <Textarea
+                defaultValue={'Другое (разрешен ответ в свободной форме)'}
+                className="resize-none py-2 min-h-9"
+                disabled
+              />
+              <Button
+                size={'icon'}
+                className={'rounded-full shrink-0'}
+                variant="ghost"
+                onClick={() => toggleOnlyChoices(question.name)}
+                aria-label="Удалить ответ свободной форме"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+
           <div
-            className={cn(['flex justify-between items-center mb-2 space-x-1'])}
+            className={cn([
+              'flex justify-between items-center mb-2 space-x-1',
+              question.only_choices && 'pr-10',
+            ])}
           >
             <AddButton
               className={'md:py-2 rounded-md py-2.5'}
@@ -95,7 +120,7 @@ export const Question = ({
               Добавить вариант ответа
             </AddButton>
 
-            {question.choices.length > 0 && (
+            {question.choices.length > 0 && !question.only_choices && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -104,6 +129,7 @@ export const Question = ({
                         'md:py-2 md:size-9 rounded-md py-2.5 size-9 shrink-0 h-10'
                       }
                       aria-label="Разрешить ответ в свободной форме"
+                      onClick={() => toggleOnlyChoices(question.name)}
                     >
                       <MessageSquareMore className="w-4 h-4" />
                     </AddButton>
