@@ -46,7 +46,7 @@ export const Question = ({
           </Button>
         </div>
 
-        <div className={'mt-4 mb-6 ml-60'}>
+        <div className={'mt-4 mb-6 md:ml-[30%] ml-[20%]'}>
           {question.choices.map((choice) => {
             return (
               <div
@@ -80,7 +80,7 @@ export const Question = ({
           </div>
         </div>
 
-        <div className="flex items-center space-x-2  pb-1">
+        <div className="flex items-center space-x-2 pb-1">
           <Label htmlFor={id} className={'text-sm'}>
             AI Комментарий
           </Label>
@@ -91,14 +91,15 @@ export const Question = ({
             </PopoverTrigger>
             <PopoverContent className={'text-sm'}>
               Это текст для AI, на основании которого AI принимается решение,
-              соответствует ли ответ кандидата требованиям
+              соответствует ли ответ кандидата на данный вопрос требованиям
+              вакансии
             </PopoverContent>
           </Popover>
         </div>
         <Textarea
           id={id}
-          placeholder="Введите комментарий"
-          className="resize-none py-2 mb-2"
+          placeholder="Введите комментарий для AI"
+          className="resize-none py-1.5 mb-2 min-h-16 md:min-h-14"
         />
       </CardContent>
     </Card>

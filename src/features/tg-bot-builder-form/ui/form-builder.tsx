@@ -7,7 +7,7 @@ import { getId } from '@/features/telegram-bot-builder/lib'
 
 export type ChoiceType = {
   id: string
-  text: string // текст варианта ответа (кнопка-choice в телеграмм)
+  text: string
 }
 
 export type QuestionType = {
@@ -71,7 +71,7 @@ export const FormBuilder = () => {
   if (isLoading) return <div>Loading...</div>
 
   return (
-    <div className="max-w-1/2 mx-auto p-2">
+    <div className="max-w-[800px] mx-auto p-4">
       {hasQuestions ? (
         <>
           <div className={'flex flex-col space-y-4 mb-4'}>
