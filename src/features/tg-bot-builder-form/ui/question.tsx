@@ -18,6 +18,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip.tsx'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog.tsx'
 
 type QuestionProps = {
   addChoice: (id: string) => void
@@ -45,21 +55,47 @@ export const Question = ({
             className="resize-none py-2 min-h-9"
           />
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className={'rounded-full shrink-0'}
-                  variant="ghost"
-                  onClick={() => removeQuestion(question.name)}
-                  aria-label="Удалить вопрос"
-                >
-                  <Trash className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Удалить вопрос</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Dialog>
+            <DialogTrigger>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className={'rounded-full shrink-0'}
+                      variant="ghost"
+                      aria-label="Удалить вопрос"
+                    >
+                      <Trash className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Удалить вопрос</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Вы точно уверены?</DialogTitle>
+                <DialogDescription>
+                  Это действие приведет к удалению вопроса, а также все данных,
+                  связанных с этим вопросом.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant={'destructive'}
+                    onClick={() => removeQuestion(question.name)}
+                  >
+                    Удалить
+                  </Button>
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button type="button">Отмена</Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <div className={'mt-4 mb-6 md:ml-[30%] ml-[20%]'}>
