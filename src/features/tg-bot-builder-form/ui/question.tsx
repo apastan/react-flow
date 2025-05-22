@@ -42,7 +42,7 @@ export const Question = ({
   const id = useId()
 
   return (
-    <Card className={'py-2'}>
+    <Card className={'py-3'}>
       <CardContent className={'px-3'}>
         <div className="flex justify-between items-center mb-2 space-x-[15%]">
           <Textarea
@@ -124,7 +124,7 @@ export const Question = ({
             <div className={'flex justify-between items-center mb-2 space-x-1'}>
               <Textarea
                 defaultValue={'Другое (разрешен ответ в свободной форме)'}
-                className="resize-none py-2 min-h-9"
+                className="resize-none py-2 min-h-9 disabled:select-none disabled:pointer-events-none disabled:select-none disabled:pointer-events-none"
                 disabled
               />
               <Button
@@ -201,7 +201,7 @@ export const Question = ({
         <Textarea
           id={id}
           placeholder="Введите комментарий для AI"
-          className="resize-none py-1.5 mb-2 min-h-16 md:min-h-14"
+          className="resize-none py-1.5 min-h-16 md:min-h-14"
         />
       </CardContent>
     </Card>
