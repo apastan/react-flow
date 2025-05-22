@@ -123,8 +123,8 @@ export const Question = ({
           {question.only_choices && (
             <div className={'flex justify-between items-center mb-2 space-x-1'}>
               <Textarea
-                defaultValue={'Другое (разрешен ответ в свободной форме)'}
-                className="resize-none py-2 min-h-9 disabled:select-none disabled:pointer-events-none disabled:select-none disabled:pointer-events-none"
+                defaultValue={'Другое'}
+                className="resize-none py-2 min-h-9 disabled:select-none disabled:pointer-events-none"
                 disabled
               />
               <Button
@@ -163,7 +163,7 @@ export const Question = ({
                       className={
                         'md:py-2 md:size-9 rounded-md py-2.5 size-9 shrink-0 h-10'
                       }
-                      aria-label="Разрешить ответ в свободной форме"
+                      aria-label="Разрешить кандидату написать свой вариант ответа"
                       onClick={() =>
                         toggleOnlyChoices(question.name, !question.only_choices)
                       }
@@ -171,8 +171,8 @@ export const Question = ({
                       <MessageSquareMore className="w-4 h-4" />
                     </AddButton>
                   </TooltipTrigger>
-                  <TooltipContent side={'bottom'}>
-                    Разрешить ответ в свободной форме
+                  <TooltipContent side={'bottom'} className={'max-w-[330px]'}>
+                    Разрешить кандидату написать свой вариант ответа
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -182,7 +182,7 @@ export const Question = ({
 
         <div className="flex items-center space-x-2 pb-1">
           <Label htmlFor={id} className={'text-sm'}>
-            AI Комментарий
+            Комментарий для AI (опционально)
           </Label>
 
           <TooltipProvider>
@@ -190,17 +190,16 @@ export const Question = ({
               <TooltipTrigger asChild>
                 <Info className="size-4" />
               </TooltipTrigger>
-              <TooltipContent className={'w-[300px]'}>
-                Это текст для AI, на основании которого AI принимается решение,
-                соответствует ли ответ кандидата на данный вопрос требованиям
-                вакансии
+              <TooltipContent className={'max-w-[260px] text-pretty'}>
+                Здесь указывается промт для AI, который проанализирует,
+                соответствует ли ответ кандидата требованиям вакансии
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>
         <Textarea
           id={id}
-          placeholder="Введите комментарий для AI"
+          placeholder="Например - Подходят только кандидаты с опытом коммерческой разработки более 2-х лет"
           className="resize-none py-1.5 min-h-16 md:min-h-14"
         />
       </CardContent>
