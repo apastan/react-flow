@@ -1,11 +1,21 @@
 import { Card, CardContent } from '@/components/ui/card.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
-import { Info, MessageSquareMore, Plus, Trash, X } from 'lucide-react'
+import {
+  GripHorizontal,
+  Info,
+  MessageSquareMore,
+  Plus,
+  Trash,
+  X,
+} from 'lucide-react'
 import { AddButton } from '@/features/tg-bot-builder-form/ui/add-button.tsx'
 import { Label } from '@/components/ui/label.tsx'
 import { useId } from 'react'
-import type { QuestionType } from '@/features/tg-bot-builder-form/ui/form-builder.tsx'
+import type {
+  ChoiceType,
+  QuestionType,
+} from '@/features/tg-bot-builder-form/ui/form-builder.tsx'
 import { cn } from '@/lib/utils.ts'
 import {
   Tooltip,
@@ -23,6 +33,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog.tsx'
+import {
+  DndContext,
+  useSensor,
+  useSensors,
+  PointerSensor,
+  closestCenter,
+  type DraggableAttributes,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable'
+import { SortableChoice } from './sortable-choice'
+import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities' // создадим
 
 type QuestionProps = {
   addChoice: (id: string) => void
@@ -30,20 +56,51 @@ type QuestionProps = {
   question: QuestionType
   removeChoice: (questionId: string, choiceId: string) => void
   toggleOnlyChoices: (name: string, onlyChoices: boolean) => void
+  setChoices: (name: string, onlyChoices: ChoiceType[]) => void
 }
 
-export const Question = ({
+type D = {
+  attributes: DraggableAttributes
+  listeners: SyntheticListenerMap | undefined
+}
+
+const Question = ({
   addChoice,
   question,
   removeQuestion,
   removeChoice,
   toggleOnlyChoices,
-}: QuestionProps) => {
+  setChoices,
+  attributes,
+  listeners,
+}: QuestionProps & D) => {
+  const sensors = useSensors(useSensor(PointerSensor))
   const id = useId()
 
+  const handleChoiceDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (active.id !== over?.id) {
+      const oldIndex = question.choices.findIndex((c) => c.id === active.id)
+      const newIndex = question.choices.findIndex((c) => c.id === over?.id)
+
+      const newChoices = arrayMove(question.choices, oldIndex, newIndex)
+
+      setChoices(question.name, newChoices)
+    }
+  }
+
   return (
-    <Card className={'py-3'}>
+    <Card className={'pt-0 pb-3'}>
       <CardContent className={'px-3'}>
+        <div
+          {...listeners}
+          {...attributes}
+          className="cursor-move flex justify-center items-center h-6"
+          aria-label="Переместить вопрос"
+        >
+          <GripHorizontal className={'size-4'} />
+        </div>
+
         <div className="flex justify-between items-center mb-2 space-x-[15%]">
           <Textarea
             placeholder="Введите текст вопроса"
@@ -96,29 +153,50 @@ export const Question = ({
         </div>
 
         <div className={'mt-4 mb-6 md:ml-[30%] ml-[20%]'}>
-          {question.choices.map((choice) => {
-            return (
-              <div
-                className={'flex justify-between items-center mb-2 space-x-1'}
-                key={choice.id}
-              >
-                <Textarea
-                  defaultValue={choice.text}
-                  placeholder="Укажите вариант ответа"
-                  className="resize-none py-2 min-h-9"
+          {/*{question.choices.map((choice) => {*/}
+          {/*  return (*/}
+          {/*    <div*/}
+          {/*      className={'flex justify-between items-center mb-2 space-x-1'}*/}
+          {/*      key={choice.id}*/}
+          {/*    >*/}
+          {/*      <Textarea*/}
+          {/*        defaultValue={choice.text}*/}
+          {/*        placeholder="Укажите вариант ответа"*/}
+          {/*        className="resize-none py-2 min-h-9"*/}
+          {/*      />*/}
+          {/*      <Button*/}
+          {/*        size={'icon'}*/}
+          {/*        className={'rounded-full shrink-0'}*/}
+          {/*        variant="ghost"*/}
+          {/*        onClick={() => removeChoice(question.name, choice.id)}*/}
+          {/*        aria-label="Удалить вариант ответа"*/}
+          {/*      >*/}
+          {/*        <X className="w-4 h-4" />*/}
+          {/*      </Button>*/}
+          {/*    </div>*/}
+          {/*  )*/}
+          {/*})}*/}
+
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleChoiceDragEnd}
+          >
+            <SortableContext
+              items={question.choices.map((c) => c.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {question.choices.map((choice) => (
+                <SortableChoice
+                  key={choice.id}
+                  id={choice.id}
+                  choice={choice}
+                  questionName={question.name}
+                  onRemove={() => removeChoice(question.name, choice.id)}
                 />
-                <Button
-                  size={'icon'}
-                  className={'rounded-full shrink-0'}
-                  variant="ghost"
-                  onClick={() => removeChoice(question.name, choice.id)}
-                  aria-label="Удалить вариант ответа"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            )
-          })}
+              ))}
+            </SortableContext>
+          </DndContext>
 
           {question.only_choices && (
             <div className={'flex justify-between items-center mb-2 space-x-1'}>
@@ -180,7 +258,7 @@ export const Question = ({
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 pb-1">
+        <div className="flex items-center space-x-2 pb-1 pt-4">
           <Label htmlFor={id} className={'text-sm'}>
             Комментарий для AI (опционально)
           </Label>
@@ -206,3 +284,5 @@ export const Question = ({
     </Card>
   )
 }
+
+export { Question, type QuestionProps }
