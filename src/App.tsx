@@ -1,8 +1,14 @@
-import { router } from '@/app/router.tsx'
-import { RouterProvider } from 'react-router-dom'
+// import { router } from '@/app/router.tsx'
+// import { RouterProvider } from 'react-router-dom'
+//
+// function App() {
+//   return <RouterProvider router={router} />
+// }
+
+import { FormBuilder } from '@/features/tg-bot-builder-form/ui'
 
 function App() {
-  return <RouterProvider router={router} />
+  return <FormBuilder />
 }
 export default App
 
